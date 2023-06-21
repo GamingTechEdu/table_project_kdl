@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 
-class SelectSimcon extends StatefulWidget {
-  SelectSimcon({super.key});
+class Select extends StatefulWidget {
+  final String text;
+  final List<String> list;
+
+  Select({super.key, required this.list, required this.text});
 
   @override
-  State<SelectSimcon> createState() => _SelectSimconState();
+  State<Select> createState() => _SelectState();
 }
 
-class _SelectSimconState extends State<SelectSimcon> {
+class _SelectState extends State<Select> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
       child: DropdownButtonFormField(
         elevation: 0,
         icon: const Icon(Icons.keyboard_arrow_down_outlined),
@@ -22,8 +25,7 @@ class _SelectSimconState extends State<SelectSimcon> {
                 borderSide:
                     BorderSide(width: 3, color: Colors.grey.withOpacity(0.5)),
                 borderRadius: BorderRadius.circular(10)),
-            label: const Text(
-              'Selecione o SIMCON',
+            label: Text(widget.text,
               style: TextStyle(color: Colors.black, fontSize: 25),
             ),
             enabledBorder: OutlineInputBorder(
@@ -34,11 +36,12 @@ class _SelectSimconState extends State<SelectSimcon> {
                 OutlineInputBorder(borderRadius: BorderRadius.circular(10))),
         // hint: Text(''),
         isExpanded: true,
-        items: [
-          DropdownMenuItem(child: Text('teste'), value: 'Item1'),
-          DropdownMenuItem(child: Text('teste2'), value: 'Item2'),
-        ],
-        value: null,
+        items: widget.list.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
         onChanged: (n) {},
       ),
     );

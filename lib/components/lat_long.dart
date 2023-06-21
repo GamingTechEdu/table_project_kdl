@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class LatLong extends StatelessWidget {
-  const LatLong({super.key});
+class SimcomIP extends StatelessWidget {
+  const SimcomIP({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class LatLong extends StatelessWidget {
                       borderSide: BorderSide(
                           width: 3, color: Colors.grey.withOpacity(0.5)),
                       borderRadius: BorderRadius.circular(10)),
-                  label: const Text('Latitude',
+                  label: const Text('SIMCON',
                       style: TextStyle(color: Colors.black, fontSize: 25)),
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                   enabledBorder: OutlineInputBorder(
@@ -43,7 +43,7 @@ class LatLong extends StatelessWidget {
                           width: 3, color: Colors.grey.withOpacity(0.5)),
                       borderRadius: BorderRadius.circular(10)),
                   label: const Text(
-                    'Longitude',
+                    'IP',
                     style: TextStyle(color: Colors.black, fontSize: 25),
                   ),
                   floatingLabelBehavior: FloatingLabelBehavior.always,

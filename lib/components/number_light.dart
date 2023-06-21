@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class NumberLight extends StatelessWidget {
-  const NumberLight({super.key});
+class NumberMSISDN extends StatelessWidget {
+  const NumberMSISDN({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class NumberLight extends StatelessWidget {
                     BorderSide(width: 3, color: Colors.grey.withOpacity(0.5)),
                 borderRadius: BorderRadius.circular(10)),
             label: const Text(
-              'Número de Luminárias',
+              'N° da linha(MSISDN)',
               style: TextStyle(color: Colors.black, fontSize: 25),
             ),
             floatingLabelBehavior: FloatingLabelBehavior.always,

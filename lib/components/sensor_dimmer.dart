@@ -6,7 +6,7 @@ class SensorDimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Row(
         children: [
           Expanded(
@@ -20,7 +20,7 @@ class SensorDimmer extends StatelessWidget {
                       borderSide: BorderSide(
                           width: 3, color: Colors.grey.withOpacity(0.5)),
                       borderRadius: BorderRadius.circular(10)),
-                  label: const Text('Sensor de Luz',
+                  label: const Text('Data Ativação',
                       style: TextStyle(color: Colors.black, fontSize: 25)),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(
@@ -53,7 +53,7 @@ class SensorDimmer extends StatelessWidget {
                       borderSide: BorderSide(
                           width: 3, color: Colors.grey.withOpacity(0.5)),
                       borderRadius: BorderRadius.circular(10)),
-                  label: const Text('Dimmer',
+                  label: const Text('Data Instalação',
                       style: TextStyle(color: Colors.black, fontSize: 25)),
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(

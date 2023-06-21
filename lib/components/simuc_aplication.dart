@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class SimucAplication extends StatefulWidget {
-  const SimucAplication({super.key});
+  final List<String> list;
+
+  const SimucAplication({super.key, required this.list});
 
   @override
   State<SimucAplication> createState() => _SimucAplicationState();
@@ -21,7 +23,7 @@ class _SimucAplicationState extends State<SimucAplication> {
                 borderSide:
                     BorderSide(width: 3, color: Colors.grey.withOpacity(0.5)),
                 borderRadius: BorderRadius.circular(10)),
-            label: const Text('Aplicação do SIMUC',
+            label: const Text('Fornecedor',
                 style: TextStyle(color: Colors.black, fontSize: 25)),
             enabledBorder: OutlineInputBorder(
               borderSide:
@@ -32,13 +34,12 @@ class _SimucAplicationState extends State<SimucAplication> {
               borderRadius: BorderRadius.circular(10),
             )),
         isExpanded: true,
-        items: [
-          DropdownMenuItem(
-            child: Text('teste'),
-            value: 'Item1',
-          ),
-          DropdownMenuItem(child: Text('teste2'), value: 'Item2'),
-        ],
+        items: widget.list.map<DropdownMenuItem<String>>((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Text(value),
+          );
+        }).toList(),
         value: null,
         onChanged: (n) {},
       ),

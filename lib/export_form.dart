@@ -12,3 +12,4 @@ export 'package:projeto_kdl_flutter/components/contact.dart';
 export 'package:projeto_kdl_flutter/components/sector_subsector.dart';
 export 'package:projeto_kdl_flutter/components/etiqueta.dart';
 export 'package:projeto_kdl_flutter/components/comments.dart';
+export 'package:projeto_kdl_flutter/components/class.dart';
