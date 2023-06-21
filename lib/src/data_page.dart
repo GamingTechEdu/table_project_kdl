@@ -1,6 +1,6 @@
 import 'package:adaptivex/adaptivex.dart';
 import 'package:flutter/material.dart';
-import './responsive_datatable.dart';
+import './datatable_views.dart';
 import './datatable_header.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -21,6 +21,7 @@ class _DataTableExampleState extends State<DataTableExample> {
   int? _currentPerPage = 10;
   List<bool>? _expanded;
   bool _showSelect = true;
+  List<Map<String, dynamic>> _sourceOriginal = [];
   List<Map<String, dynamic>> _selecteds = [];
   List <Map<String, dynamic>> _source = [];
   String? _searchKey = "id";
@@ -28,52 +29,41 @@ class _DataTableExampleState extends State<DataTableExample> {
   // List<Map<String, dynamic>> data = [];
   List<DatatableHeader> _headers = [];
 
-
-  // Future<void> fetchData() async {
-  //   final response = await http.get(Uri.parse('http://localhost:8080/simcards'));
-  //   if (response.statusCode == 200) {
-  //     setState(() {
-  //       data = jsonDecode(response.body);
-  //     });
-  //     print(data);
-  //   }
-  // }
-
-  // Future<List<Map<String, dynamic>>> fetchData() async {
-  //   final response = await http.get(Uri.parse('http://localhost:8080/simcards'));
-  //   if (response.statusCode == 200) {
-  //     final List<dynamic> jsonData = jsonDecode(response.body);
-  //     final List<Map<String, dynamic>> source = jsonData.cast<Map<String, dynamic>>();
-  //     print(source);
-  //     return source;
-  //   } else {
-  //     return [];
-  //   }
-  // }
-
-  Future<List<Map<String, dynamic>>> fetchData() async {
+  Future<void> fetchData() async {
     final response = await http.get(Uri.parse('http://localhost:8080/simcards'));
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
-      final List<Map<String, dynamic>> source = jsonData.cast<Map<String, dynamic>>();
-      List<Map<String, dynamic>> temps = [];
-
-      for (var i = 0; i < source.length; i++) {
-        var item = source[i];
-        temps.add({
-          "cliente": item['id'],
-          "numerochip": "${item['id']}\000${item['id']}",
-          "simcon": "simcon ${item['id']}",
-          "fornecedor": "fornecedor-${item['id']}",
-          "numerolinha": item['id'] * 10.00,
-        });
-      }
-      print(temps);
-      return temps;
+      final List<Map<String, dynamic>> source =
+      jsonData.cast<Map<String, dynamic>>();
+      setState(() {
+        _source = source;
+        _sourceFiltered = List.from(_source);
+        _total = _sourceFiltered.length;
+        _resetData();
+      });
     } else {
-      return [];
+      print('Erro na requisição: ${response.statusCode}');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Erro na requisição'),
+            content: Text('Ocorreu um erro ao carregar os dados. Tente novamente mais tarde.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
+
+
 
   _resetData({start = 0}) async {
     setState(() => _isLoading = true);
@@ -87,9 +77,32 @@ class _DataTableExampleState extends State<DataTableExample> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
+  _filterData(value) {
+    setState(() => _isLoading = true);
+
+    try {
+      if (value == "" || value == null) {
+        _sourceFiltered = _sourceOriginal;
+      } else {
+        _sourceFiltered = _sourceOriginal
+            .where((data) => data[_searchKey!]
+            .toString()
+            .toLowerCase()
+            .contains(value.toString().toLowerCase()))
+            .toList();
+      }
+
+      _total = _sourceFiltered.length;
+      var _rangeTop = _total < _currentPerPage! ? _total : _currentPerPage!;
+      _expanded = List.generate(_rangeTop, (index) => false);
+      _source = _sourceFiltered.getRange(0, _rangeTop).toList();
+    } catch (e) {
+      print(e);
+    }
+    setState(() => _isLoading = false);
+  }
+
+  void _initializeData() async {
     _headers = [
       DatatableHeader(
         text: "Cliente",
@@ -132,10 +145,11 @@ class _DataTableExampleState extends State<DataTableExample> {
     fetchData();
   }
 
-  _initializeData() async {
-    fetchData();
+  @override
+  void initState() {
+    super.initState();
+    _initializeData();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -192,7 +206,7 @@ class _DataTableExampleState extends State<DataTableExample> {
                                   suffixIcon: IconButton(
                                       icon: Icon(Icons.search), onPressed: () {})),
                               onSubmitted: (value) {
-                                // _filterData(value);
+                                _filterData(value);
                               },
                             )),
                       if (!_isSearch)
@@ -210,9 +224,9 @@ class _DataTableExampleState extends State<DataTableExample> {
                     showSelect: _showSelect,
                     autoHeight: false,
                     dropContainer: (data) {
-                      if (int.tryParse(data['id'].toString())!.isEven) {
-                        return Text("is Even");
-                      }
+                      // if (int.tryParse(data['id'].toString())!.isEven) {
+                      //   return Text("is Even");
+                      // }
                       return _DropDownContainer(data: data);
                     },
 
@@ -339,19 +353,19 @@ class _DataTableExampleState extends State<DataTableExample> {
                     ],
 
                     headerDecoration: BoxDecoration(
-                        color: Colors.grey,
+                        color: Color(0xffD3D3D3),
                         border: Border(
                             bottom: BorderSide(color: Colors.black, width: 1))),
 
                     selectedDecoration: BoxDecoration(
                       border: Border(
                           bottom:
-                          BorderSide(color: Colors.green[300]!, width: 1)),
-                      color: Color(0xFFFFB347),
+                          BorderSide(color: Colors.blue, width: 1)),
+                      color: Color(0xFFD3D3D3),
                     ),
-                    headerTextStyle: TextStyle(color: Colors.white),
-                    rowTextStyle: TextStyle(color: Colors.green),
-                    selectedTextStyle: TextStyle(color: Colors.white),
+                    headerTextStyle: TextStyle(color: Colors.black),
+                    rowTextStyle: TextStyle(color: Colors.orange),
+                    selectedTextStyle: TextStyle(color: Colors.blue),
                   )
               )
             ),
@@ -372,24 +386,19 @@ class _DropDownContainer extends StatelessWidget {
       Widget w = Row(
         children: [
           Text(entry.key.toString()),
-          Spacer(),
-          Text(entry.value.toString()),
+          // Spacer(),
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: Text(entry.value.toString()),
+          ),
         ],
       );
       return w;
     }).toList();
 
     return Container(
-      /// height: 100,
       child: Column(
-        /// children: [
-        ///   Expanded(
-        ///       child: Container(
-        ///     color: Colors.red,
-        ///     height: 50,
-        ///   )),
-        /// ],
-        children: _children,
+         children: _children,
       ),
     );
   }
