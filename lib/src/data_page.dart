@@ -4,13 +4,19 @@ import './datatable_views.dart';
 import './datatable_header.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../component_form.dart';
+
+
 
 class DataTableExample extends StatefulWidget {
+
+
   @override
   _DataTableExampleState createState() => _DataTableExampleState();
 }
 
 class _DataTableExampleState extends State<DataTableExample> {
+  final FormularioExterno formularioExterno = FormularioExterno();
   int _currentPage = 1;
   List<Map<String, dynamic>> _sourceFiltered = [];
   String? _sortColumn;
@@ -181,7 +187,9 @@ class _DataTableExampleState extends State<DataTableExample> {
                 clipBehavior: Clip.none,
                   child:  ResponsiveDatatable(
                     title: TextButton.icon(
-                      onPressed: () => {},
+                      onPressed: () => {
+                        formularioExterno.abrirFormulario(context),
+                      },
                       icon: Icon(Icons.add),
                       label: Text("Novo SIMCARD"),
                     ),

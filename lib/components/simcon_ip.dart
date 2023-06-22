@@ -15,6 +15,7 @@ class SimcomIP extends StatelessWidget {
               cursorColor: Colors.orange,
               cursorHeight: 25,
               decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
                   focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                           width: 3, color: Colors.grey.withOpacity(0.5)),
@@ -38,6 +39,7 @@ class SimcomIP extends StatelessWidget {
               cursorColor: Colors.orange,
               cursorHeight: 25,
               decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
                   focusedBorder: OutlineInputBorder(
                       borderSide: BorderSide(
                           width: 3, color: Colors.grey.withOpacity(0.5)),

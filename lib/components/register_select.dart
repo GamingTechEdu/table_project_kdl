@@ -20,6 +20,7 @@ class _SelectState extends State<Select> {
         icon: const Icon(Icons.keyboard_arrow_down_outlined),
         focusColor: Colors.transparent,
         decoration: InputDecoration(
+            contentPadding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
             floatingLabelBehavior: FloatingLabelBehavior.always,
             focusedBorder: OutlineInputBorder(
                 borderSide:

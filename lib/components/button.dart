@@ -12,19 +12,22 @@ class Button  extends StatefulWidget {
 class _ButtonState extends State<Button> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-            width: 400,
-            height: 45,
-            child: TextButton(
-                style: TextButton.styleFrom(
-                    backgroundColor: Colors.blue[800],
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8))),
-                onPressed: () {},
-                child: Text(
-                  'CONFIRMAR',
-                  style: TextStyle(color: Colors.white),
-                )),
-          );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Container(
+              width: 400,
+              height: 45,
+              child: TextButton(
+                  style: TextButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8))),
+                  onPressed: () {},
+                  child: Text(
+                    'CONFIRMAR',
+                    style: TextStyle(color: Colors.black),
+                  )),
+            ),
+    );
   }
 }

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_kdl_flutter/component_form.dart';
 import 'package:projeto_kdl_flutter/export_table.dart';
-import 'package:projeto_kdl_flutter/components/class.dart';
+import 'package:projeto_kdl_flutter/components/date_picker.dart';
 
 // void main() {
 //     WidgetsFlutterBinding.ensureInitialized();
 //     runApp(MyApp());
 // }
 //
-// class.dart MyApp extends StatelessWidget {
+// date_picker.dart MyApp extends StatelessWidget {
 //     @override
 //     Widget build(BuildContext context) {
 //         return MaterialApp(
@@ -29,18 +29,18 @@ import 'package:projeto_kdl_flutter/components/class.dart';
 //
 //
 
-// void main() => runApp(
-//     MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//         home: DataTableExample()
-// ));
-
-
 void main() => runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: ComponentForm(),
-      home: MyFormScreen(),
-    )
-);
+        home: DataTableExample()
+));
 
+
+// void main() => runApp(
+//     MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       // home: ComponentForm(),
+//       home: ComponentForm(),
+//     )
+// );
+//
