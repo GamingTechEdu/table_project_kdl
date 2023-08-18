@@ -6,11 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../component_form.dart';
 
-
-
 class DataTableExample extends StatefulWidget {
-
-
   @override
   _DataTableExampleState createState() => _DataTableExampleState();
 }
@@ -32,11 +28,11 @@ class _DataTableExampleState extends State<DataTableExample> {
   List <Map<String, dynamic>> _source = [];
   String? _searchKey = "id";
   bool _isSearch = false;
-  // List<Map<String, dynamic>> data = [];
   List<DatatableHeader> _headers = [];
 
   Future<void> fetchData() async {
-    final response = await http.get(Uri.parse('http://localhost:8080/simcards'));
+    // final response = await http.get(Uri.parse('http://localhost:8080/simcards'));
+    final response = await http.get(Uri.parse('http://187.122.102.36:60060/simcards'));
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
       final List<Map<String, dynamic>> source =
@@ -68,8 +64,6 @@ class _DataTableExampleState extends State<DataTableExample> {
       );
     }
   }
-
-
 
   _resetData({start = 0}) async {
     setState(() => _isLoading = true);
@@ -112,7 +106,7 @@ class _DataTableExampleState extends State<DataTableExample> {
     _headers = [
       DatatableHeader(
         text: "Cliente",
-        value: "id",
+        value: "cliente",
         show: true,
         sortable: true,
         textAlign: TextAlign.center,
