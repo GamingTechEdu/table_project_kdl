@@ -76,6 +76,8 @@ class ResponsiveDatatable extends StatefulWidget {
 }
 
 class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
+
+
   Widget mobileHeader() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -220,18 +222,22 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
   }
 
   Widget desktopHeader() {
+
     final _headerDecoration = widget.headerDecoration ??
         BoxDecoration(
             color: Colors.red,
             border:
             Border(bottom: BorderSide(color: Colors.black, width: 1)));
+
+
     return Container(
-      /// TODO:
       decoration: _headerDecoration,
+
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (widget.showSelect && widget.selecteds != null)
+
             Checkbox(
                 value: widget.selecteds!.length == widget.source!.length &&
                     widget.source != null &&
@@ -239,11 +245,11 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                 onChanged: (value) {
                   if (widget.onSelectAll != null) widget.onSelectAll!(value);
                 }),
-          ...widget.headers
-              .where((header) => header.show == true)
-              .map(
-                (header) => Expanded(
+
+          ...widget.headers.where((header) => header.show == true).map((header) =>
+              Expanded(
                 flex: header.flex,
+
                 child: InkWell(
                   onTap: () {
                     if (widget.onSort != null && header.sortable) {
@@ -252,6 +258,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                   },
                   child: header.headerBuilder != null
                       ? header.headerBuilder!(header.value)
+
                       : Container(
                     padding: const EdgeInsets.all(11),
                     alignment: headerAlignSwitch(header.textAlign),
@@ -274,8 +281,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                     ),
                   ),
                 )),
-          )
-              .toList()
+            ).toList()
         ],
       ),
     );
@@ -283,12 +289,14 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
 
   List<Widget> desktopList() {
     final _decoration = BoxDecoration(
-        border: Border(
-            bottom: BorderSide(color: Colors.grey[300]!, width: 1)
-        ));
+    border: Border(
+        bottom: BorderSide(color: Colors.grey[300]!, width: 1)
+    ));
     final _rowDecoration = widget.rowDecoration ?? _decoration;
     final _selectedDecoration = widget.selectedDecoration ?? _decoration;
+
     List<Widget> widgets = [];
+
     for (var index = 0; index < widget.source!.length; index++) {
       final data = widget.source![index];
       widgets.add(Column(

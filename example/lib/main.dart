@@ -30,15 +30,34 @@ import 'package:projeto_kdl_flutter/export_table.dart';
 void main() => runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-        home: DataTableExample()
+        home: DataTableExample(),
 ));
 
-
-// void main() => runApp(
-//     MaterialApp(
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
 //       debugShowCheckedModeBanner: false,
-//       // home: ComponentForm(),
-//       home: ComponentForm(),
-//     )
-// );
-//
+//       home: Scaffold(
+//         body: Center(
+//           child: Container(
+//             width: 1000,
+//             height: 900,
+//             color: Colors.blue, // Cor de fundo do container
+//             child: Center(
+//               child: DataTableExample(),
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+
+
+
+
+
+

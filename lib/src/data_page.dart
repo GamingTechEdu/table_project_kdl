@@ -12,13 +12,12 @@ class DataTableExample extends StatefulWidget {
 }
 
 class _DataTableExampleState extends State<DataTableExample> {
-  final FormularioExterno formularioExterno = FormularioExterno();
   int _currentPage = 1;
   List<Map<String, dynamic>> _sourceFiltered = [];
   String? _sortColumn;
   bool _sortAscending = true;
   bool _isLoading = true;
-  List<int> _perPages = [10, 20, 50, 100];
+  List<int> _perPages = [10, 20, 50, 100, 150, 200];
   int _total = 100;
   int? _currentPerPage = 10;
   List<bool>? _expanded;
@@ -26,12 +25,11 @@ class _DataTableExampleState extends State<DataTableExample> {
   List<Map<String, dynamic>> _sourceOriginal = [];
   List<Map<String, dynamic>> _selecteds = [];
   List <Map<String, dynamic>> _source = [];
-  String? _searchKey = "id";
+  String? _searchKey = "ICCID";
   bool _isSearch = false;
   List<DatatableHeader> _headers = [];
 
   Future<void> fetchData() async {
-    // final response = await http.get(Uri.parse('http://localhost:8080/simcards'));
     final response = await http.get(Uri.parse('http://187.122.102.36:60060/simcards'));
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
@@ -63,6 +61,32 @@ class _DataTableExampleState extends State<DataTableExample> {
         },
       );
     }
+  }
+
+  Widget buildClienteCell(dynamic value) {
+    if (value != null) {
+      // Suponhamos que o mapa "row" tenha informações sobre o cliente, como nome e idade
+      String nomeCliente = value['cliente'] ?? 'Nome Desconhecido';
+
+      // Criando o widget personalizado para a célula
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            nomeCliente,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      );
+    }
+
+    return Text(
+      value.toString(),
+      textAlign: TextAlign.center,
+    );
   }
 
   _resetData({start = 0}) async {
@@ -154,26 +178,28 @@ class _DataTableExampleState extends State<DataTableExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Controle de SIMCARDS'),
-        actions: [
-          IconButton(
-            onPressed: _initializeData,
-            icon: Icon(Icons.refresh_sharp),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
+      // appBar: AppBar(
+      //   title: Text('Controle de SIMCARDS'),
+      //   actions: [
+      //     IconButton(
+      //       onPressed: _initializeData,
+      //       icon: Icon(Icons.refresh_sharp),
+      //     ),
+      //   ],
+      // ),
+      // body: SingleChildScrollView(
+        body: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
           children: [
             Container(
+
               margin: EdgeInsets.all(10),
               padding: EdgeInsets.all(0),
               constraints: BoxConstraints(
-                maxHeight: 700,
+                maxHeight: 600,
               ),
+
               child: Card(
                 ///Aqui estou envolvendo minha tabela e linhas
                 elevation: 3,
@@ -182,35 +208,102 @@ class _DataTableExampleState extends State<DataTableExample> {
                   child:  ResponsiveDatatable(
                     title: TextButton.icon(
                       onPressed: () => {
-                        formularioExterno.abrirFormulario(context),
+                       print("Novo SIMCARD")
                       },
                       icon: Icon(Icons.add),
                       label: Text("Novo SIMCARD"),
                     ),
                     reponseScreenSizes: [ScreenSize.xs],
+
                     actions: [
+                      TextButton.icon(
+                        onPressed: () => {
+                          print('Editar')
+                        },
+                        icon: Icon(Icons.edit),
+                        label: Text("Editar"),
+                      ),
+                      TextButton.icon(
+                        onPressed: () => {
+                          print('Exportar')
+                        },
+                        icon: Icon(Icons.add_chart),
+                        label: Text("Exportar"),
+                      ),
+                      TextButton.icon(
+                          onPressed: () => {
+                            print('Delete')
+                          },
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                          label: Text(
+                              "Deletar",
+                              style: TextStyle(
+                                color: Colors.red,
+                              ),
+                          ),
+                      ),
                       if (_isSearch)
-                        Expanded(
-                            child: TextField(
-                              decoration: InputDecoration(
-                                  hintText: 'Enter search term based on ' +
-                                      _searchKey!
-                                          .replaceAll(new RegExp('[\\W_]+'), ' ')
-                                          .toUpperCase(),
-                                  prefixIcon: IconButton(
-                                      icon: Icon(Icons.cancel),
-                                      onPressed: () {
-                                        setState(() {
-                                          _isSearch = false;
-                                        });
-                                        _initializeData();
-                                      }),
-                                  suffixIcon: IconButton(
-                                      icon: Icon(Icons.search), onPressed: () {})),
-                              onSubmitted: (value) {
-                                _filterData(value);
-                              },
-                            )),
+                        // Container(
+                        //   width: 300,
+                        //   height: 50,// Define a largura máxima do Container
+                        //   child: Row(
+                        //     children: [
+                        //       Expanded(
+                        //         child: TextField(
+                        //           decoration: InputDecoration(
+                        //             hintText: 'Pesquise por ' +
+                        //                 _searchKey!
+                        //                     .replaceAll(new RegExp('[\\W_]+'), ' ')
+                        //                     .toUpperCase(),
+                        //             prefixIcon: IconButton(
+                        //               icon: Icon(Icons.cancel),
+                        //               onPressed: () {
+                        //                 setState(() {
+                        //                   _isSearch = false;
+                        //                 });
+                        //                 _initializeData();
+                        //               },
+                        //             ),
+                        //             suffixIcon: IconButton(
+                        //               icon: Icon(Icons.search),
+                        //               onPressed: () {},
+                        //             ),
+                        //           ),
+                        //           onSubmitted: (value) {
+                        //             _filterData(value);
+                        //           },
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
+                        Container(
+                          width: 300,
+                              height: 40,
+                              child: TextField(
+                                decoration: InputDecoration(
+                                    hintText: 'Pesquise por ' +
+                                        _searchKey!
+                                            .replaceAll(new RegExp('[\\W_]+'), ' ')
+                                            .toUpperCase(),
+                                    prefixIcon: IconButton(
+                                        icon: Icon(Icons.cancel),
+                                        onPressed: () {
+                                          setState(() {
+                                            _isSearch = false;
+                                          });
+                                          _initializeData();
+                                        }),
+                                    suffixIcon: IconButton(
+                                        icon: Icon(Icons.search), onPressed: () {})),
+                                onSubmitted: (value) {
+                                  _filterData(value);
+                                },
+                              ),
+                          ),
                       if (!_isSearch)
                         IconButton(
                             icon: Icon(Icons.search),
@@ -220,6 +313,7 @@ class _DataTableExampleState extends State<DataTableExample> {
                               });
                             })
                     ],
+
                     headers: _headers,
                     source: _source,
                     selecteds: _selecteds,
@@ -233,8 +327,8 @@ class _DataTableExampleState extends State<DataTableExample> {
                     },
 
                     onChangedRow: (value, header) {
-                      /// print(value);
-                      /// print(header);
+                      // print(value);
+                      // print(header);
                     },
                     onSubmittedRow: (value, header) {
                       /// print(value);
@@ -275,8 +369,7 @@ class _DataTableExampleState extends State<DataTableExample> {
                       if (value!) {
                         setState(() => _selecteds.add(item));
                       } else {
-                        setState(
-                                () => _selecteds.removeAt(_selecteds.indexOf(item)));
+                        setState(() => _selecteds.removeAt(_selecteds.indexOf(item)));
                       }
                     },
 
@@ -288,13 +381,14 @@ class _DataTableExampleState extends State<DataTableExample> {
                         setState(() => _selecteds.clear());
                       }
                     },
-
                     footers: [
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 15),
                         child: Text("Rows per page:"),
                       ),
+
                       if (_perPages.isNotEmpty)
+
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 15),
                           child: DropdownButton<int>(
@@ -315,11 +409,13 @@ class _DataTableExampleState extends State<DataTableExample> {
                             isExpanded: false,
                           ),
                         ),
+
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 15),
                         child:
                         Text("$_currentPage - $_currentPerPage of $_total"),
                       ),
+
                       IconButton(
                         icon: Icon(
                           Icons.arrow_back_ios,
@@ -357,8 +453,7 @@ class _DataTableExampleState extends State<DataTableExample> {
                     headerDecoration: BoxDecoration(
                         color: Color(0xffD3D3D3),
                         border: Border(
-                            bottom: BorderSide(color: Colors.black, width: 1))),
-
+                            bottom: BorderSide(color: Colors.black, width: 2))),
                     selectedDecoration: BoxDecoration(
                       border: Border(
                           bottom:
@@ -373,18 +468,20 @@ class _DataTableExampleState extends State<DataTableExample> {
             ),
           ]
         ),
-      ),
+      // ),
     );
   }
 }
 
 class _DropDownContainer extends StatelessWidget {
   final Map<String, dynamic> data;
+
   const _DropDownContainer({Key? key, required this.data}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     List<Widget> _children = data.entries.map<Widget>((entry) {
+
       Widget w = Row(
         children: [
           Text(entry.key.toString()),
@@ -395,6 +492,7 @@ class _DropDownContainer extends StatelessWidget {
           ),
         ],
       );
+
       return w;
     }).toList();
 
@@ -404,26 +502,7 @@ class _DropDownContainer extends StatelessWidget {
       ),
     );
   }
+
 }
 
 
-// DataTable(
-// columns: _headers
-//     .where((header) => header.show)
-//     .map((header) => DataColumn(label: Text(header.text)))
-//     .toList(),
-// rows: data
-//     .map(
-// (item) => DataRow(
-// cells: _headers
-//     .where((header) => header.show)
-//     .map(
-// (header) => DataCell(
-// Text(item[header.value].toString()),
-// ),
-// )
-//     .toList(),
-// ),
-// )
-//     .toList(),
-// ),
