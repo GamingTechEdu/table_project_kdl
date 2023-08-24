@@ -2,6 +2,7 @@ import 'package:adaptivex/adaptivex.dart';
 import 'package:flutter/material.dart';
 import 'datatable_header.dart';
 import './texteditable.dart';
+import './utils/alignment.dart';
 
 class ResponsiveDatatable extends StatefulWidget {
   final bool showSelect;
@@ -76,7 +77,6 @@ class ResponsiveDatatable extends StatefulWidget {
 }
 
 class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
-
 
   Widget mobileHeader() {
     return Row(
@@ -208,19 +208,6 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
     }).toList();
   }
 
-  static Alignment headerAlignSwitch(TextAlign? textAlign) {
-    switch (textAlign) {
-      case TextAlign.center:
-        return Alignment.center;
-      case TextAlign.left:
-        return Alignment.centerLeft;
-      case TextAlign.right:
-        return Alignment.centerRight;
-      default:
-        return Alignment.center;
-    }
-  }
-
   Widget desktopHeader() {
 
     final _headerDecoration = widget.headerDecoration ??
@@ -261,7 +248,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
 
                       : Container(
                     padding: const EdgeInsets.all(11),
-                    alignment: headerAlignSwitch(header.textAlign),
+                    alignment: AlignmentUtils.headerAlignSwitch(header.textAlign),
                     child: Wrap(
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
@@ -351,7 +338,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                         textAlign: header.textAlign,
                         style: widget.selecteds!.contains(data)
                             ? widget.selectedTextStyle
-                            : widget.rowTextStyle,
+                            : header.color,
                       ),
                     ),
                   )
@@ -404,6 +391,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
               ...mobileList(),
             ],
           ),
+
         if (!widget.autoHeight)
           Expanded(
             child: ListView(
@@ -427,6 +415,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
           )
       ],
     )
+
     /**
      * for large screen
      */

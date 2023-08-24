@@ -5,6 +5,7 @@ class DatatableHeader{
   final String value;
   final bool sortable;
   final bool editable;
+  final TextStyle? color;
   bool show;
   final TextAlign textAlign;
   final int flex;
@@ -17,6 +18,7 @@ class DatatableHeader{
     this.textAlign = TextAlign.center,
     this.sortable = false,
     this.show = true,
+    this.color,
     this.editable = false,
     this.flex = 1,
     this.headerBuilder,
@@ -27,6 +29,7 @@ class DatatableHeader{
     text: map['text'],
     value: map['value'],
     sortable: map['sortable'],
+    color: map['color'],
     show: map['show'],
     textAlign: map['textAlign'],
     flex: map['flex'],
@@ -38,12 +41,12 @@ class DatatableHeader{
     "text": this.text,
     "value": this.value,
     "sortable": this.sortable,
+    "color": this.color,
     "show": this.show,
     "textAlign": this.textAlign,
     "flex": this.flex,
     "headerBuilder": this.headerBuilder,
     "sourceBuilder": this.sourceBuilder,
   };
-
 }
 
