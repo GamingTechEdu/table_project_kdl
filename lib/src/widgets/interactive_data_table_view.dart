@@ -19,7 +19,7 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
   bool _isLoading = true;
   List<int> _perPages = [15, 25, 55, 105, 155, 205];
   int _total = 100;
-  int? _currentPerPage = 15;
+  int? _currentPerPage = 25;
   List<bool>? _expanded;
   bool _showSelect = true;
   List<Map<String, dynamic>> _selecteds = [];
