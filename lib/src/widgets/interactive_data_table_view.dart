@@ -3,6 +3,7 @@ import '../datatable_views.dart';
 import 'package:adaptivex/adaptivex.dart';
 import '../data/data_initialization.dart';
 import '../data/api_service.dart';
+import '../../component_form.dart';
 
 class InteractiveDataTableView extends StatefulWidget {
   const InteractiveDataTableView({super.key});
@@ -116,8 +117,25 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                     clipBehavior: Clip.none,
                     child:  ResponsiveDatatable(
                       title: TextButton.icon(
-                        onPressed: () => {
-                          print("Novo SIMCARD")
+                        onPressed: () {
+                          // showDialog(
+                          //   context: context,
+                          //   builder: (BuildContext context) {
+                          //     return AlertDialog(
+                          //       title: Text("Novo SIMCARD"),
+                          //       content: ComponentForm(),
+                          //       actions: [
+                          //         TextButton(
+                          //           onPressed: () {
+                          //             Navigator.pop(context); // Fechar o AlertDialog
+                          //           },
+                          //           child: Text("Fechar"),
+                          //         ),
+                          //       ],
+                          //     );
+                          //   },
+                          // );
+                          print('Novo Simcard');
                         },
                         icon: Icon(Icons.add),
                         label: Text("Novo SIMCARD"),
@@ -266,7 +284,7 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                           child: Text("Rows per page:"),
                         ),
 
-                        if (_perPages.isNotEmpty)
+                        if (_perPages!.isNotEmpty)
 
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 15),
