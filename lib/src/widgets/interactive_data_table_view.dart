@@ -3,7 +3,7 @@ import '../datatable_views.dart';
 import 'package:adaptivex/adaptivex.dart';
 import '../data/data_initialization.dart';
 import '../data/api_service.dart';
-import '../../component_form.dart';
+
 
 class InteractiveDataTableView extends StatefulWidget {
   const InteractiveDataTableView({super.key});
