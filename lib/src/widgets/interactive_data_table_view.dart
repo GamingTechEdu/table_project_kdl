@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../datatable_views.dart';
 import 'package:adaptivex/adaptivex.dart';
 import '../data/data_initialization.dart';
-import '../data/api_service.dart';
+// import '../data/api_service.dart';
+import '../data/teste_notifier.dart';
 
 
 class InteractiveDataTableView extends StatefulWidget {
@@ -28,25 +29,30 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
   String? _searchKey = "ICCID";
   bool _isSearch = false;
   List<Map<String, dynamic>> _sourceOriginal = [];
+  final apiNotifier = ApiNotifier();
 
-  Future<void> fetchData() async {
-    try {
-      List<Map<String, dynamic>> source = await ApiService.fetchData();
-      setState(() {
-        _source = source;
-        print(_source);
-        _sourceFiltered = List.from(_source);
-        _total = _sourceFiltered.length;
-        _resetData();
-      });
-    } catch (e) {
-      print("Error fetching data: $e");
-    }
-  }
+  // Future<void> fetchData() async {
+  //   try {
+  //     List<Map<String, dynamic>> source = await ApiService.fetchData();
+  //     setState(() {
+  //       _source = source;
+  //       print(_source);
+  //       _sourceFiltered = List.from(_source);
+  //       _total = _sourceFiltered.length;
+  //       _resetData();
+  //     });
+  //   } catch (e) {
+  //     print("Error fetching data: $e");
+  //   }
+  // }
 
   void initState() {
     super.initState();
-    fetchData();
+    apiNotifier.addListener(() {
+      setState(() {
+        apiNotifier.fetchData();
+      });
+    });
   }
 
   _resetData({start = 0}) async {

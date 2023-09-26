@@ -28,10 +28,12 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  provider: ^6.0.5
   flutter:
     sdk: flutter
   projeto_kdl_flutter:
     path: ../
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons date_picker.dart for iOS style icons.
