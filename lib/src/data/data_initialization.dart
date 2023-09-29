@@ -1,10 +1,8 @@
-import 'package:projeto_kdl_flutter/src/data/teste_notifier.dart';
 
 import '../datatable_header.dart';
 import 'package:flutter/material.dart';
 import '../data/api_service.dart';
 
-final apiService = ApiNotifier();
 
 List<DatatableHeader> headers = [
   DatatableHeader(
@@ -49,6 +47,3 @@ List<DatatableHeader> headers = [
   ),
 ];
 
-void initializeData() async {
-  apiService.fetchData();
-}

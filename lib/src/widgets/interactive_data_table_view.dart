@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import '../datatable_views.dart';
 import 'package:adaptivex/adaptivex.dart';
 import '../data/data_initialization.dart';
-// import '../data/api_service.dart';
-import '../data/teste_notifier.dart';
+import '../data/api_service.dart';
 
 
 class InteractiveDataTableView extends StatefulWidget {
@@ -29,30 +28,30 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
   String? _searchKey = "ICCID";
   bool _isSearch = false;
   List<Map<String, dynamic>> _sourceOriginal = [];
-  final apiNotifier = ApiNotifier();
 
-  // Future<void> fetchData() async {
-  //   try {
-  //     List<Map<String, dynamic>> source = await ApiService.fetchData();
-  //     setState(() {
-  //       _source = source;
-  //       print(_source);
-  //       _sourceFiltered = List.from(_source);
-  //       _total = _sourceFiltered.length;
-  //       _resetData();
-  //     });
-  //   } catch (e) {
-  //     print("Error fetching data: $e");
-  //   }
-  // }
+
+  Future<void> fetchData() async {
+    try {
+      List<Map<String, dynamic>> source = await ApiService.fetchData();
+      setState(() {
+        _source = source;
+        print(_source);
+        _sourceFiltered = List.from(_source);
+        _total = _sourceFiltered.length;
+        _resetData();
+      });
+    } catch (e) {
+      print("Error fetching data: $e");
+    }
+  }
 
   void initState() {
     super.initState();
-    apiNotifier.addListener(() {
-      setState(() {
-        apiNotifier.fetchData();
-      });
-    });
+    fetchData();
+  }
+
+  void initializeData() async {
+    fetchData();
   }
 
   _resetData({start = 0}) async {
@@ -95,16 +94,6 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Controle de SIMCARDS'),
-      //   actions: [
-      //     IconButton(
-      //       onPressed: fetchData,
-      //       icon: Icon(Icons.refresh_sharp),
-      //     ),
-      //   ],
-      // ),
-      // body: SingleChildScrollView(
       body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
@@ -124,23 +113,27 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                     child:  ResponsiveDatatable(
                       title: TextButton.icon(
                         onPressed: () {
-                          // showDialog(
-                          //   context: context,
-                          //   builder: (BuildContext context) {
-                          //     return AlertDialog(
-                          //       title: Text("Novo SIMCARD"),
-                          //       content: ComponentForm(),
-                          //       actions: [
-                          //         TextButton(
-                          //           onPressed: () {
-                          //             Navigator.pop(context); // Fechar o AlertDialog
-                          //           },
-                          //           child: Text("Fechar"),
-                          //         ),
-                          //       ],
-                          //     );
-                          //   },
-                          // );
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text("Novo SIMCARD"),
+                                content: Container(
+                                  width: 100,
+                                  height: 100,
+                                  color: Colors.red,
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pop(context); // Fechar o AlertDialog
+                                    },
+                                    child: Text("Fechar"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                           print('Novo Simcard');
                         },
                         icon: Icon(Icons.add),
@@ -164,7 +157,7 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                         ),
                         TextButton.icon(
                           onPressed: () => {
-                            print('Atualizar Tabela'),
+                             fetchData()
                           },
                           icon: Icon(Icons.refresh_sharp),
                           label: Text("Refresh"),
