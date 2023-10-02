@@ -30,7 +30,6 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
   List<Map<String, dynamic>> _sourceOriginal = [];
   final searchController = Get.put(Controller());
 
-
   Future<void> fetchData() async {
     try {
       List<Map<String, dynamic>> source = await ApiService.fetchData();
@@ -45,7 +44,6 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
       print("Error fetching data: $e");
     }
   }
-
 
   void initState() {
     super.initState();
@@ -72,6 +70,7 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
   _filterData(value) {
     setState(() => _isLoading = true);
     _sourceOriginal = _source;
+    print(_sourceOriginal);
     try {
       if (value == "" || value == null) {
         _sourceFiltered = _sourceOriginal;
@@ -197,7 +196,7 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                                     icon: Icon(Icons.cancel),
                                     onPressed: () {
                                       searchController.setSearchState(false);
-                                      initializeData();
+                                      fetchData();
                                     },
                                   ),
                                   suffixIcon: IconButton(
@@ -206,9 +205,15 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                                     },
                                   ),
                                 ),
+                                onChanged: (value){
+                                  if(value.isEmpty){
+                                    fetchData();
+                                  }
+                                },
                                 onSubmitted: (value) {
                                   _filterData(value);
-                                  print(value);                                },
+                                  print(value);
+                                },
                               ),
                             );
                           } else {
