@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:projeto_kdl_flutter/export_table.dart';
 
 
 void main() {
-  runApp(
-      MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: InteractiveDataTableView()
-      )
-  );
+  runApp(MyApp());
 }
 
-// void main() {
-//   runApp(MaterialApp(
-//     debugShowCheckedModeBanner: false,
-//     home: InteractiveDataTableView(),
-//   ));
-// }
-
-
-
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: InteractiveDataTableView(),
+    );
+  }
+}
 
 
 

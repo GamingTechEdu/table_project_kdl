@@ -3,7 +3,8 @@ import '../datatable_views.dart';
 import 'package:adaptivex/adaptivex.dart';
 import '../data/data_initialization.dart';
 import '../data/api_service.dart';
-
+import '../controller/controller.dart';
+import 'package:get/get.dart';
 
 class InteractiveDataTableView extends StatefulWidget {
   const InteractiveDataTableView({super.key});
@@ -26,16 +27,16 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
   List<Map<String, dynamic>> _selecteds = [];
   List <Map<String, dynamic>> _source = [];
   String? _searchKey = "ICCID";
-  bool _isSearch = false;
   List<Map<String, dynamic>> _sourceOriginal = [];
+  final searchController = Get.put(Controller());
 
 
   Future<void> fetchData() async {
     try {
       List<Map<String, dynamic>> source = await ApiService.fetchData();
-      setState(() {
         _source = source;
-        print(_source);
+      setState(() {
+        _sourceOriginal = source;
         _sourceFiltered = List.from(_source);
         _total = _sourceFiltered.length;
         _resetData();
@@ -44,6 +45,7 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
       print("Error fetching data: $e");
     }
   }
+
 
   void initState() {
     super.initState();
@@ -61,6 +63,7 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
     Future.delayed(Duration(seconds: 0)).then((value) {
       _expanded = List.generate(_expandedLen as int, (index) => false);
       _source.clear();
+      _sourceOriginal = _source;
       _source = _sourceFiltered.getRange(start, start + _expandedLen).toList();
       setState(() => _isLoading = false);
     });
@@ -68,7 +71,7 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
 
   _filterData(value) {
     setState(() => _isLoading = true);
-
+    _sourceOriginal = _source;
     try {
       if (value == "" || value == null) {
         _sourceFiltered = _sourceOriginal;
@@ -80,11 +83,11 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
             .contains(value.toString().toLowerCase()))
             .toList();
       }
-
       _total = _sourceFiltered.length;
       var _rangeTop = _total < _currentPerPage! ? _total : _currentPerPage!;
       _expanded = List.generate(_rangeTop, (index) => false);
       _source = _sourceFiltered.getRange(0, _rangeTop).toList();
+
     } catch (e) {
       print(e);
     }
@@ -111,36 +114,38 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                     shadowColor: Colors.black,
                     clipBehavior: Clip.none,
                     child:  ResponsiveDatatable(
-                      title: TextButton.icon(
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text("Novo SIMCARD"),
-                                content: Container(
-                                  width: 100,
-                                  height: 100,
-                                  color: Colors.red,
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context); // Fechar o AlertDialog
-                                    },
-                                    child: Text("Fechar"),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                          print('Novo Simcard');
-                        },
-                        icon: Icon(Icons.add),
-                        label: Text("Novo SIMCARD"),
-                      ),
                       reponseScreenSizes: [ScreenSize.xs],
                       actions: [
+                        TextButton.icon(
+                          // onPressed: () {
+                          //   showDialog(
+                          //     context: context,
+                          //     builder: (BuildContext context) {
+                          //       return AlertDialog(
+                          //         title: Text("Novo SIMCARD"),
+                          //         content: Container(
+                          //           width: 100,
+                          //           height: 100,
+                          //           color: Colors.red,
+                          //         ),
+                          //         actions: [
+                          //           TextButton(
+                          //             onPressed: () {
+                          //               Navigator.pop(context); // Fechar o AlertDialog
+                          //             },
+                          //             child: Text("Fechar"),
+                          //           ),
+                          //         ],
+                          //       );
+                          //     },
+                          //   );
+                          //   print('Novo Simcard');
+                          // },
+                          onPressed: () => {
+                          },
+                          icon: Icon(Icons.add),
+                          label: Text("Novo SIMCARD"),
+                        ),
                         TextButton.icon(
                           onPressed: () => {
                             print('Editar')
@@ -157,7 +162,7 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                         ),
                         TextButton.icon(
                           onPressed: () => {
-                             fetchData()
+                            // fetchData()
                           },
                           icon: Icon(Icons.refresh_sharp),
                           label: Text("Refresh"),
@@ -177,51 +182,51 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                             ),
                           ),
                         ),
-
-                        if (_isSearch)
-                          Container(
-                            width: 300,
-                            height: 40,
-                            child: TextField(
-                              decoration: InputDecoration(
+                        Obx(() {
+                          if (searchController.isSearch.value) {
+                            return Container(
+                              width: 300,
+                              height: 40,
+                              child: TextField(
+                                decoration: InputDecoration(
                                   hintText: 'Pesquise por ' +
                                       _searchKey!
                                           .replaceAll(new RegExp('[\\W_]+'), ' ')
                                           .toUpperCase(),
                                   prefixIcon: IconButton(
-                                      icon: Icon(Icons.cancel),
-                                      onPressed: () {
-                                        setState(() {
-                                          _isSearch = false;
-                                        });
-                                        initializeData();
-                                      }),
+                                    icon: Icon(Icons.cancel),
+                                    onPressed: () {
+                                      searchController.setSearchState(false);
+                                      initializeData();
+                                    },
+                                  ),
                                   suffixIcon: IconButton(
-                                      icon: Icon(Icons.search), onPressed: () {})),
-                              onSubmitted: (value) {
-                                _filterData(value);
-                              },
-                            ),
-                          ),
-                        if (!_isSearch)
-                          IconButton(
+                                    icon: Icon(Icons.search),
+                                    onPressed: () {
+                                    },
+                                  ),
+                                ),
+                                onSubmitted: (value) {
+                                  _filterData(value);
+                                  print(value);                                },
+                              ),
+                            );
+                          } else {
+                            return IconButton(
                               icon: Icon(Icons.search),
                               onPressed: () {
-                                setState(() {
-                                  _isSearch = true;
-                                });
-                              })
+                                searchController.setSearchState(true);
+                              },
+                            );
+                          }
+                        })
                       ],
-
                       headers: headers,
                       source: _source,
                       selecteds: _selecteds,
                       showSelect: _showSelect,
                       autoHeight: false,
                       dropContainer: (data) {
-                        // if (int.tryParse(data['id'].toString())!.isEven) {
-                        //   return Text("is Even");
-                        // }
                         return _DropDownContainer(data: data);
                       },
                       onChangedRow: (value, header) {
@@ -237,7 +242,6 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                       },
                       onSort: (value) {
                         setState(() => _isLoading = true);
-
                         setState(() {
                           _sortColumn = value;
                           _sortAscending = !_sortAscending;
@@ -253,7 +257,6 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                               : _sourceFiltered.length;
                           _source = _sourceFiltered.getRange(0, _rangeTop).toList();
                           _searchKey = value;
-
                           _isLoading = false;
                         });
                       },
@@ -282,9 +285,7 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                           padding: EdgeInsets.symmetric(horizontal: 15),
                           child: Text("Rows per page:"),
                         ),
-
                         if (_perPages!.isNotEmpty)
-
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 15),
                             child: DropdownButton<int>(
@@ -311,7 +312,6 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                           child:
                           Text("$_currentPage - $_currentPerPage of $_total"),
                         ),
-
                         IconButton(
                           icon: Icon(
                             Icons.arrow_back_ios,
@@ -345,9 +345,6 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                           padding: EdgeInsets.symmetric(horizontal: 15),
                         )
                       ],
-
-
-
                       headerDecoration: BoxDecoration(
                           color: Color(0xffD3D3D3),
                           border: Border(
@@ -368,6 +365,7 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
       ),
       // ),
     );
+
   }
 }
 
@@ -396,6 +394,44 @@ class _DropDownContainer extends StatelessWidget {
     return Container(
       child: Column(
         children: _children,
+      ),
+    );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  final searchController = Get.put(Controller());
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Exemplo GetX'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Obx(() {
+              if (searchController.isSearch.value) {
+                return Container(
+                  width: 300,
+                  height: 40,
+                  child: TextField(
+                    // ...resto do código do TextField...
+                  ),
+                );
+              } else {
+                return IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () {
+                    searchController.setSearchState(true);
+                  },
+                );
+              }
+            }),
+          ],
+        ),
       ),
     );
   }

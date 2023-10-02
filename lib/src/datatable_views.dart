@@ -1,6 +1,5 @@
 import 'package:adaptivex/adaptivex.dart';
 import 'package:flutter/material.dart';
-import 'package:projeto_kdl_flutter/src/textselectable.dart';
 import 'datatable_header.dart';
 import './texteditable.dart';
 import './utils/alignment.dart';

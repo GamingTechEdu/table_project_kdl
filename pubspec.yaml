@@ -10,7 +10,7 @@ environment:
 dependencies:
   adaptivex: ^0.0.1+2
   intl: ^0.17.0
-  get: ^4.1.4
+  get: ^4.6.6
   flutter:
     sdk: flutter
   http: ^1.1.0
