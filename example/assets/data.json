@@ -1,0 +1,36 @@
+[
+  {
+    "id": "1",
+    "cliente": "ILUMINA SP",
+    "simcon": "2222001",
+    "slotsimcon": "1",
+    "datainstalacao": "01-01-2021",
+    "numerochip": "12345678901234567890",
+    "dataaticacao": "01-01-2021",
+    "fornecedor": "DATELO",
+    "operadora": "VIVO",
+    "plano": "300MB COMPARTILHADO",
+    "apn": "kdl.br",
+    "numerolinha": "123456789012345",
+    "numeroip": "182.198.198/12",
+    "obs": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit"
+  },
+  {
+    "id": "2",
+    "cliente": "GUARULHOS",
+    "simcon": "2222002",
+    "slotsimcon": "2",
+    "datainstalacao": "17-02-2022",
+    "numerochip": "12322678901234567890",
+    "dataaticacao": "17-02-2022",
+    "fornecedor": "DATELO",
+    "operadora": "VIVO",
+    "plano": "300MB COMPARTILHADO",
+    "apn": "kdl.br",
+    "numerolinha": "122256789012345",
+    "numeroip": "182.198.198/12",
+    "obs": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit"
+  }
+]
+
+

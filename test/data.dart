@@ -1,32 +1,57 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:projeto_kdl_flutter/export_table.dart';
-import 'package:projeto_kdl_flutter/src/controller/controller.dart';// Importe o arquivo onde a classe ApiService está definida
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:projeto_kdl_flutter/src/controller/table_controller.dart';
+import 'package:projeto_kdl_flutter/src/repositories/table_repository_imp.dart';
 
+import 'package:projeto_kdl_flutter/src/repositories/table_repository_mock.dart';
+
+
+
+import 'package:flutter_test/flutter_test.dart';
+import 'package:get/get.dart';
+ // Importe a classe que você deseja testar
 
 void main() {
-  test('Teste de fetchData', () async {
-    final controller = Controller();
 
-    // Mock da função fetchData na ApiService para retornar dados de teste
-    ApiService.fetchData = () async {
-      return RxList<Map<String, dynamic>>([
-        {'id': 1, 'nome': 'Item 1'},
-        {'id': 2, 'nome': 'Item 2'},
-      ]);
-    };
+  group('YourDataController tests', () {
+    testWidgets('fetch method', (tester) async {
+      // Inicialize o controlador
+      final controller = Get.put(TableController(TableRepositoryImp()));
 
-    await controller.fetchData();
+      // Chame o método fetch
+      await controller.fetch();
+      var lista = controller.source;
+      print(lista);
 
-    // Verifique se a variável source foi atualizada corretamente
-    expect(controller.source.length, 2); // Deve conter 2 elementos
 
-    // Verifique se os elementos da source estão corretos
-    expect(controller.source[0]['id'], 1);
-    expect(controller.source[0]['nome'], 'Item 1');
-    expect(controller.source[1]['id'], 2);
-    expect(controller.source[1]['nome'], 'Item 2');
+      // Verifique se o estado foi atualizado
+      expect(controller.isLoading, isFalse);
+      // Adicione mais verificações conforme necessário
+    });
+
+    testWidgets('resetData method', (tester) async {
+      // Inicialize o controlador
+      final controller = Get.put(TableController(TableRepositoryImp()));
+
+      // Chame o método resetData
+      await controller.resetData();
+
+      // Verifique se o estado foi atualizado
+      expect(controller.isLoading, isFalse);
+      // Adicione mais verificações conforme necessário
+    });
+
+    testWidgets('filterData method', (tester) async {
+      // Inicialize o controlador
+      final controller = Get.put(TableController(TableRepositoryImp()));
+
+      // Chame o método filterData
+      await controller.filterData("searchValue");
+
+      // Verifique se o estado foi atualizado
+      expect(controller.isLoading, isFalse);
+      // Adicione mais verificações conforme necessário
+    });
   });
 }
+
+

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'model/table_data_model.dart';
+
 class DatatableHeader{
   final String text;
   final String value;
@@ -11,7 +13,7 @@ class DatatableHeader{
   final TextAlign textAlign;
   final int flex;
   final Widget Function(dynamic value)? headerBuilder;
-  final Widget Function(dynamic value, Map<String, dynamic>? row)? sourceBuilder;
+  final Widget Function(dynamic value, Map<String, dynamic> row)? sourceBuilder;
 
   DatatableHeader({
     required this.text,

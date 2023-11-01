@@ -5,12 +5,10 @@ import 'package:get/get.dart';
 
 class ApiService {
   static Future<RxList<Map<String, dynamic>>> fetchData() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:8080/simcards'));
+    final response = await http.get(Uri.parse('http://localhost:8080/simcards'));
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = json.decode(response.body);
-      final RxList<Map<String, dynamic>> source =
-          RxList<Map<String, dynamic>>.from(jsonData);
+      final RxList<Map<String, dynamic>> source =  RxList<Map<String, dynamic>>.from(jsonData);
       return source;
     } else {
       throw Exception('Falha ao buscar os dados');

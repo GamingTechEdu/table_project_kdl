@@ -1,8 +1,11 @@
 import 'package:adaptivex/adaptivex.dart';
 import 'package:flutter/material.dart';
+import 'package:projeto_kdl_flutter/src/controller/table_controller.dart';
+import 'package:projeto_kdl_flutter/src/repositories/table_repository_imp.dart';
+import 'package:projeto_kdl_flutter/src/texteditable.dart';
 import 'datatable_header.dart';
-import './texteditable.dart';
 import './utils/alignment.dart';
+import 'model/table_data_model.dart';
 
 class ResponsiveDatatable extends StatefulWidget {
   final bool showSelect;
@@ -25,8 +28,10 @@ class ResponsiveDatatable extends StatefulWidget {
   final bool isExpandRows;
   final List<bool>? expanded;
   final Widget Function(Map<String, dynamic> value)? dropContainer;
-  final Function(Map<String, dynamic> value, DatatableHeader header)? onChangedRow;
-  final Function(Map<String, dynamic> value, DatatableHeader header)? onSubmittedRow;
+  final Function(Map<String, dynamic> value, DatatableHeader header)?
+      onChangedRow;
+  final Function(Map<String, dynamic> value, DatatableHeader header)?
+      onSubmittedRow;
   final List<ScreenSize> reponseScreenSizes;
   final BoxDecoration? headerDecoration;
   final BoxDecoration? rowDecoration;
@@ -77,154 +82,149 @@ class ResponsiveDatatable extends StatefulWidget {
 }
 
 class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
-
-  Widget mobileHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Checkbox(
-          value: widget.selecteds!.length == widget.source!.length &&
-              widget.source != null &&
-              widget.source!.isNotEmpty,
-          onChanged: (value) {
-            if (widget.onSelectAll != null) widget.onSelectAll!(value);
-          },
-        ),
-        PopupMenuButton(
-            child: Container(
-              padding: const EdgeInsets.all(15),
-              child: const Text("SORT BY"),
-            ),
-            tooltip: "SORT BY",
-            initialValue: widget.sortColumn,
-            itemBuilder: (_) => widget.headers
-                .where(
-                    (header) => header.show == true && header.sortable == true)
-                .toList()
-                .map((header) => PopupMenuItem(
-              child: Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                children: [
-                  Text(
-                    header.text,
-                    textAlign: header.textAlign,
-                  ),
-                  if (widget.sortColumn != null &&
-                      widget.sortColumn == header.value)
-                    widget.sortAscending!
-                        ? const Icon(Icons.arrow_downward, size: 15)
-                        : const Icon(Icons.arrow_upward, size: 15)
-                ],
-              ),
-              value: header.value,
-            ))
-                .toList(),
-            onSelected: (dynamic value) {
-              if (widget.onSort != null) widget.onSort!(value);
-            })
-      ],
-    );
-  }
-
-  List<Widget> mobileList() {
-    final _decoration = BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey[300]!, width: 1)));
-    final _rowDecoration = widget.rowDecoration ?? _decoration;
-    final _selectedDecoration = widget.selectedDecoration ?? _decoration;
-    return widget.source!.map((data) {
-      return InkWell(
-        onTap: () => widget.onTabRow?.call(data),
-        child: Container(
-          /// TODO:
-          decoration: widget.selecteds!.contains(data)
-              ? _selectedDecoration
-              : _rowDecoration,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Spacer(),
-                  if (widget.showSelect && widget.selecteds != null)
-                    Checkbox(
-                        value: widget.selecteds!.contains(data),
-                        onChanged: (value) {
-                          if (widget.onSelect != null) {
-                            widget.onSelect!(value, data);
-                          }
-                        }),
-                ],
-              ),
-              if (widget.commonMobileView && widget.dropContainer != null)
-                widget.dropContainer!(data),
-              if (!widget.commonMobileView)
-                ...widget.headers
-                    .where((header) => header.show == true)
-                    .toList()
-                    .map(
-                      (header) => Container(
-                    padding: const EdgeInsets.all(11),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        header.headerBuilder != null
-                            ? header.headerBuilder!(header.value)
-                            : Text(
-                          header.text,
-                          overflow: TextOverflow.clip,
-                          style: widget.selecteds!.contains(data)
-                              ? widget.selectedTextStyle
-                              : widget.rowTextStyle,
-                        ),
-                        const Spacer(),
-                        // header.sourceBuilder != null
-                        //     ? header.sourceBuilder!(
-                        //     data[header.value], data)
-                        //     : header.editable
-                        //     ? TextEditableWidget(
-                        //   data: data,
-                        //   header: header,
-                        //   textAlign: TextAlign.end,
-                        //   onChanged: widget.onChangedRow,
-                        //   onSubmitted: widget.onSubmittedRow,
-                        //   hideUnderline: widget.hideUnderline,
-                        // )
-                        //     : Text(
-                        //   "${data[header.value]}",
-                        //   style: widget.selecteds!.contains(data)
-                        //       ? widget.selectedTextStyle
-                        //       : widget.rowTextStyle,
-                        // )
-                      ],
-                    ),
-                  ),
-                )
-                    .toList()
-            ],
-          ),
-        ),
-      );
-    }).toList();
-  }
+  // Widget mobileHeader() {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: [
+  //       Checkbox(
+  //         value: widget.selecteds!.length == widget.source!.length &&
+  //             widget.source != null &&
+  //             widget.source!.isNotEmpty,
+  //         onChanged: (value) {
+  //           if (widget.onSelectAll != null) widget.onSelectAll!(value);
+  //         },
+  //       ),
+  //       PopupMenuButton(
+  //           child: Container(
+  //             padding: const EdgeInsets.all(15),
+  //             child: const Text("SORT BY"),
+  //           ),
+  //           tooltip: "SORT BY",
+  //           initialValue: widget.sortColumn,
+  //           itemBuilder: (_) => widget.headers
+  //               .where(
+  //                   (header) => header.show == true && header.sortable == true)
+  //               .toList()
+  //               .map((header) => PopupMenuItem(
+  //             child: Wrap(
+  //               crossAxisAlignment: WrapCrossAlignment.center,
+  //               children: [
+  //                 Text(
+  //                   header.text,
+  //                   textAlign: header.textAlign,
+  //                 ),
+  //                 if (widget.sortColumn != null &&
+  //                     widget.sortColumn == header.value)
+  //                   widget.sortAscending!
+  //                       ? const Icon(Icons.arrow_downward, size: 15)
+  //                       : const Icon(Icons.arrow_upward, size: 15)
+  //               ],
+  //             ),
+  //             value: header.value,
+  //           ))
+  //               .toList(),
+  //           onSelected: (dynamic value) {
+  //             if (widget.onSort != null) widget.onSort!(value);
+  //           })
+  //     ],
+  //   );
+  // }
+  //
+  // List<Widget> mobileList() {
+  //   final _decoration = BoxDecoration(
+  //       border: Border(bottom: BorderSide(color: Colors.grey[300]!, width: 1)));
+  //   final _rowDecoration = widget.rowDecoration ?? _decoration;
+  //   final _selectedDecoration = widget.selectedDecoration ?? _decoration;
+  //
+  //   return widget.source!.map((data) {
+  //     return InkWell(
+  //       onTap: () => widget.onTabRow?.call(data),
+  //       child: Container(
+  //         /// TODO:
+  //         decoration: widget.selecteds!.contains(data)
+  //             ? _selectedDecoration
+  //             : _rowDecoration,
+  //         child: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: [
+  //             Row(
+  //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //               children: [
+  //                 const Spacer(),
+  //                 if (widget.showSelect && widget.selecteds != null)
+  //                   Checkbox(
+  //                       value: widget.selecteds!.contains(data),
+  //                       onChanged: (value) {
+  //                         if (widget.onSelect != null) {
+  //                           widget.onSelect!(value, data);
+  //                         }
+  //                       }),
+  //               ],
+  //             ),
+  //             if (widget.commonMobileView && widget.dropContainer != null)
+  //               widget.dropContainer!(data),
+  //             if (!widget.commonMobileView)
+  //               ...widget.headers
+  //                   .where((header) => header.show == true)
+  //                   .toList()
+  //                   .map(
+  //                     (header) => Container(
+  //                   padding: const EdgeInsets.all(11),
+  //                   child: Row(
+  //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                     children: [
+  //                       header.headerBuilder != null
+  //                           ? header.headerBuilder!(header.value)
+  //                           : Text(
+  //                         header.text,
+  //                         overflow: TextOverflow.clip,
+  //                         style: widget.selecteds!.contains(data)
+  //                             ? widget.selectedTextStyle
+  //                             : widget.rowTextStyle,
+  //                       ),
+  //                       const Spacer(),
+  //                       header.sourceBuilder != null
+  //                           ? header.sourceBuilder!(
+  //                           data[header.value], data)
+  //                           : header.editable
+  //                           ? TextEditableWidget(
+  //                         data: data,
+  //                         header: header,
+  //                         textAlign: TextAlign.end,
+  //                         onChanged: widget.onChangedRow,
+  //                         onSubmitted: widget.onSubmittedRow,
+  //                         hideUnderline: widget.hideUnderline,
+  //                       )
+  //                           : Text(
+  //                         "${data[header.value]}",
+  //                         style: widget.selecteds!.contains(data)
+  //                             ? widget.selectedTextStyle
+  //                             : widget.rowTextStyle,
+  //                       )
+  //                     ],
+  //                   ),
+  //                 ),
+  //               )
+  //                   .toList()
+  //           ],
+  //         ),
+  //       ),
+  //     );
+  //   }).toList();
+  // }
 
   Widget desktopHeader() {
-
     final _headerDecoration = widget.headerDecoration ??
-        BoxDecoration(
+        const BoxDecoration(
             color: Colors.red,
-            border:
-            Border(bottom: BorderSide(color: Colors.black, width: 1)));
-
+            border: Border(bottom: BorderSide(color: Colors.black, width: 1)));
 
     return Container(
       decoration: _headerDecoration,
-
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           if (widget.showSelect && widget.selecteds != null)
-
             Checkbox(
                 value: widget.selecteds!.length == widget.source!.length &&
                     widget.source != null &&
@@ -232,43 +232,44 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                 onChanged: (value) {
                   if (widget.onSelectAll != null) widget.onSelectAll!(value);
                 }),
-
-          ...widget.headers.where((header) => header.show == true).map((header) =>
-              Expanded(
-                flex: header.flex,
-
-                child: InkWell(
-                  onTap: () {
-                    if (widget.onSort != null && header.sortable) {
-                      widget.onSort!(header.value);
-                    }
-                  },
-                  child: header.headerBuilder != null
-                      ? header.headerBuilder!(header.value)
-
-                      : Container(
-                    padding: const EdgeInsets.all(11),
-                    alignment: AlignmentUtils.headerAlignSwitch(header.textAlign),
-                    child: Wrap(
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Text(
-                          header.text,
-                          textAlign: header.textAlign,
-                          style: widget.headerTextStyle,
-                        ),
-                        if (widget.sortColumn != null &&
-                            widget.sortColumn == header.value)
-                          widget.sortAscending!
-                              ? const Icon(Icons.arrow_downward,
-                              size: 15)
-                              : const Icon(Icons.arrow_upward,
-                              size: 15)
-                      ],
-                    ),
-                  ),
-                )),
-            ).toList()
+          ...widget.headers
+              .where((header) => header.show == true)
+              .map(
+                (header) => Expanded(
+                    flex: header.flex,
+                    child: InkWell(
+                      onTap: () {
+                        if (widget.onSort != null && header.sortable) {
+                          widget.onSort!(header.value);
+                        }
+                      },
+                      child: header.headerBuilder != null
+                          ? header.headerBuilder!(header.value)
+                          : Container(
+                              padding: const EdgeInsets.all(11),
+                              alignment: AlignmentUtils.headerAlignSwitch(
+                                  header.textAlign),
+                              child: Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  Text(
+                                    header.text,
+                                    textAlign: header.textAlign,
+                                    style: widget.headerTextStyle,
+                                  ),
+                                  if (widget.sortColumn != null &&
+                                      widget.sortColumn == header.value)
+                                    widget.sortAscending!
+                                        ? const Icon(Icons.arrow_downward,
+                                            size: 15)
+                                        : const Icon(Icons.arrow_upward,
+                                            size: 15)
+                                ],
+                              ),
+                            ),
+                    )),
+              )
+              .toList()
         ],
       ),
     );
@@ -276,9 +277,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
 
   List<Widget> desktopList() {
     final _decoration = BoxDecoration(
-    border: Border(
-        bottom: BorderSide(color: Colors.grey[300]!, width: 1)
-    ));
+        border: Border(bottom: BorderSide(color: Colors.grey[300]!, width: 1)));
     final _rowDecoration = widget.rowDecoration ?? _decoration;
     final _selectedDecoration = widget.selectedDecoration ?? _decoration;
 
@@ -286,6 +285,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
 
     for (var index = 0; index < widget.source!.length; index++) {
       final data = widget.source![index];
+      // print('DATA => $data');
       widgets.add(Column(
         children: [
           InkWell(
@@ -299,9 +299,10 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
               padding: EdgeInsets.all(widget.showSelect ? 0 : 11),
 
               /// TODO:
-              decoration: widget.selecteds!.contains(data)
-                  ? _selectedDecoration
-                  : _rowDecoration,
+              decoration:
+                  (widget.selecteds != null && widget.selecteds!.contains(data))
+                      ? _selectedDecoration
+                      : _rowDecoration,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -321,27 +322,27 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
                       .where((header) => header.show == true)
                       .map(
                         (header) => Expanded(
-                      flex: header.flex,
-                      child: header.sourceBuilder != null
-                          ? header.sourceBuilder!(data[header.value], data)
-                          : header.editable
-                          ? TextEditableWidget(
-                        data: data,
-                        header: header,
-                        textAlign: header.textAlign,
-                        onChanged: widget.onChangedRow,
-                        onSubmitted: widget.onSubmittedRow,
-                        hideUnderline: widget.hideUnderline,
+                          flex: header.flex,
+                          child: header.sourceBuilder != null
+                              ? header.sourceBuilder!(data[header.value], data)
+                              : header.editable
+                                  ? TextEditableWidget(
+                                      data: data,
+                                      header: header,
+                                      textAlign: header.textAlign,
+                                      onChanged: widget.onChangedRow,
+                                      onSubmitted: widget.onSubmittedRow,
+                                      hideUnderline: widget.hideUnderline,
+                                    )
+                                  : Text(
+                                      "${data[header.value]}",
+                                      textAlign: header.textAlign,
+                                      style: widget.selecteds!.contains(data)
+                                          ? widget.selectedTextStyle
+                                          : header.color,
+                                    ),
+                        ),
                       )
-                          : Text(
-                        "${data[header.value]}",
-                        textAlign: header.textAlign,
-                        style: widget.selecteds!.contains(data)
-                            ? widget.selectedTextStyle
-                            : header.color,
-                      ),
-                    ),
-                  )
                       .toList()
                 ],
               ),
@@ -359,75 +360,14 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.reponseScreenSizes.isNotEmpty &&
-        widget.reponseScreenSizes.contains(context.screenSize)
-        ?
-    /// for small screen
-    Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        /// title and actions
-        if (widget.title != null || widget.actions != null)
-          Container(
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                border:
-                Border(bottom: BorderSide(color: Colors.grey[300]!))),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                if (widget.title != null) widget.title!,
-                if (widget.actions != null) ...widget.actions!
-              ],
-            ),
-          ),
-
-        if (widget.autoHeight)
-          Column(
-            children: [
-              if (widget.showSelect && widget.selecteds != null)
-                mobileHeader(),
-              if (widget.isLoading) const LinearProgressIndicator(),
-              ...mobileList(),
-            ],
-          ),
-
-        if (!widget.autoHeight)
-          Expanded(
-            child: ListView(
-              /// itemCount: source.length,
-              children: [
-                if (widget.showSelect && widget.selecteds != null)
-                  mobileHeader(),
-                if (widget.isLoading) const LinearProgressIndicator(),
-
-                /// mobileList
-                ...mobileList(),
-              ],
-            ),
-          ),
-
-        /// footer
-        if (widget.footers != null)
-          Wrap(
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [...widget.footers!],
-          )
-      ],
-    )
-
-    /**
-     * for large screen
-     */
-        : Column(
+    return Column(
       children: [
         //title and actions
         if (widget.title != null || widget.actions != null)
           Container(
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
-                border:
-                Border(bottom: BorderSide(color: Colors.grey[300]!))),
+                border: Border(bottom: BorderSide(color: Colors.grey[300]!))),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -445,7 +385,7 @@ class _ResponsiveDatatableState extends State<ResponsiveDatatable> {
         if (widget.autoHeight) Column(children: desktopList()),
 
         if (!widget.autoHeight)
-        // desktopList
+          // desktopList
           if (widget.source != null && widget.source!.isNotEmpty)
             Expanded(child: ListView(children: desktopList())),
 
