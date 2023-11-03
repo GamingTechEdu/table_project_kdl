@@ -18,6 +18,7 @@ class TableController extends ChangeNotifier {
   final TableRepository _tableController;
   TableController(this._tableController);
 
+  List<int> perPages = [15, 25, 55, 105, 155, 205];
   bool showSelect = true;
   bool sortAscending = true;
   String? sortColumn;
@@ -151,4 +152,28 @@ class TableController extends ChangeNotifier {
       return;
     }
   }
+
+  String verification(String value){
+    switch(value) {
+      case 'slotsimcon':
+        return 'Slot SIMCON';
+      case 'datainstalacao':
+        return 'Data de Instalação';
+      case 'dataaticacao':
+        return 'Data de Ativação';
+      case 'operadora':
+        return 'Operadora';
+      case 'plano':
+        return 'Plano';
+      case 'apn':
+        return 'Apn';
+      case 'numeroip':
+        return 'Número de IP';
+      case 'obs':
+        return 'Observação';
+
+    }
+    return value;
+  }
+
 }

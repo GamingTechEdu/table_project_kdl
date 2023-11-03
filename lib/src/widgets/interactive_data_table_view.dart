@@ -9,6 +9,8 @@ import '../data/api_service.dart';
 import '../controller/controller.dart';
 import 'package:get/get.dart';
 
+import '../utils/api_utils.dart';
+
 class InteractiveDataTableView extends StatefulWidget {
   const InteractiveDataTableView({super.key});
 
@@ -18,8 +20,6 @@ class InteractiveDataTableView extends StatefulWidget {
 }
 
 class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
-  List<int> _perPages = [15, 25, 55, 105, 155, 205];
-
   final searchController = Get.put(Controller());
 
   void initState() {
@@ -98,207 +98,184 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
           mainAxisSize: MainAxisSize.max,
           children: [
             Container(
-                margin: const EdgeInsets.all(10),
-                padding: const EdgeInsets.all(0),
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.95,
-                ),
-                child: Card(
-                    elevation: 3,
-                    shadowColor: Colors.black,
-                    clipBehavior: Clip.none,
-                    child: ResponsiveDatatable(
-                      reponseScreenSizes: [ScreenSize.xs],
-                      actions: [
-                        TextButton.icon(
-                          onPressed: () => {
-                            setState((){
-
-                            })
-                          },
-                          icon: Icon(Icons.add),
-                          label: Text("Novo SIMCARD"),
-                        ),
-                        TextButton.icon(
-                          onPressed: () => {print('Editar')},
-                          icon: Icon(Icons.edit),
-                          label: Text("Editar"),
-                        ),
-                        TextButton.icon(
-                          onPressed: () => {print('Exportar')},
-                          icon: Icon(Icons.add_chart),
-                          label: Text("Exportar"),
-                        ),
-                        TextButton.icon(
-                          onPressed: () => {tableController.fetch()},
-                          icon: Icon(Icons.refresh_sharp),
-                          label: Text("Refresh"),
-                        ),
-                        TextButton.icon(
-                          onPressed: () => {print('Delete')},
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          ),
-                          label: const Text(
-                            "Deletar",
-                            style: TextStyle(
-                              color: Colors.red,
-                            ),
-                          ),
-                        ),
-                        Obx(() {
-                          if (searchController.isSearch.value) {
-                            return Container(
-                              width: 300,
-                              height: 40,
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  hintText: 'Pesquise por ' +
-                                      tableController.searchKey!
-                                          .replaceAll(
-                                              new RegExp('[\\W_]+'), ' ')
-                                          .toUpperCase(),
-                                  prefixIcon: IconButton(
-                                    icon: Icon(Icons.cancel),
-                                    onPressed: () {
-                                      searchController.setSearchState(false);
-                                      tableController.fetch();
-                                      print("Passei aqui");
-                                    },
-                                  ),
-                                  suffixIcon: IconButton(
-                                    icon: Icon(Icons.search),
-                                    onPressed: () {
-                                    },
-                                  ),
-                                ),
-                                onChanged: (value) {
-                                  if (value.isEmpty) {
-                                    tableController.fetch();
-                                  }
-                                },
-                                onSubmitted: (value) {
-                                  tableController.filterData(value);
-                                  print(value);
-                                },
-                              ),
-                            );
-                          } else {
-                            return IconButton(
-                              icon: Icon(Icons.search),
-                              onPressed: () {
-                                searchController.setSearchState(true);
-                              },
-                            );
-                          }
-                        })
-                      ],
-                      headers: headers,
-                      source: tableController.listSims,
-                      selecteds: tableController.selecteds,
-                      showSelect: tableController.showSelect,
-
-                      autoHeight: false,
-                      dropContainer: (data) {
-                        return _DropDownContainer(data: data);
-                      },
-                      onChangedRow: (value, header) {
-                        // print(value);
-                        // print(header);
-                      },
-                      onSubmittedRow: (value, header) {
-                        /// print(value);
-                        /// print(header);
-                      },
-                      onTabRow: (data) {
-                        print(data);
-                      },
-                      // onSort: (value) {
-                      //   setState(() => tableController.isLoading = true);
-                      //   setState(() {
-                      //     _sortColumn = value;
-                      //     _sortAscending = !_sortAscending;
-                      //     if (_sortAscending) {
-                      //       _sourceFiltered.sort((a, b) =>
-                      //           b["$_sortColumn"].compareTo(a["$_sortColumn"]));
-                      //     } else {
-                      //       _sourceFiltered.sort((a, b) =>
-                      //           a["$_sortColumn"].compareTo(b["$_sortColumn"]));
-                      //     }
-                      //     var _rangeTop =
-                      //     tableController.currentPerPage! < _sourceFiltered.length
-                      //             ? tableController.currentPerPage!
-                      //             : _sourceFiltered.length;
-                      //     _source =
-                      //         _sourceFiltered.getRange(0, _rangeTop).toList();
-                      //     tableController.searchKey = value;
-                      //     tableController.isLoading = false;
-                      //   });
-                      // },
-                      onSort: (value) => tableController.onSort(value),
-                      expanded: tableController.expanded,
-                      sortAscending: tableController.sortAscending,
-                      sortColumn: tableController.sortColumn,
-                      isLoading: tableController.isLoading,
-                      onSelect: (value, item) => tableController.onSelect(value, item),
-                      onSelectAll: (value) => tableController.onSelectAll(value),
-                      footers: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: const  Text("Linhas por página: "),
-                        ),
-                        if (_perPages.isNotEmpty)
-                          Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 15),
-                              child: DropdownButton<int>(
-                                value: tableController.currentPerPage,
-                                items: _perPages
-                                    .map((e) => DropdownMenuItem<int>(
-                                          child: Text("$e"),
-                                          value: e,
-                                        ))
-                                    .toList(),
-                                onChanged: (dynamic value) {
-                                  setState(() {
-                                    tableController.currentPerPage = value;
-                                    tableController.currentPage;
-                                    tableController.resetData();
-                                  });
-                                },
-                                isExpanded: false,
-                              ),
-                            ),
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: 15),
-                            child: Text("${tableController.currentPage} - ${tableController.currentPerPage} of ${tableController.total}"),
-                          ),
-                          IconButton(
-                          icon: const Icon(Icons.arrow_back_ios, size: 16),
-                          onPressed: (){tableController.backArrow(tableController);},
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.arrow_forward_ios, size: 16),
-                          onPressed: (){ tableController.nextPage(tableController);},
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                        )
-
-                      ],
-                      headerDecoration: BoxDecoration(
-                          color: Color(0xffD3D3D3),
-                          border: Border(
-                              bottom:
-                                  BorderSide(color: Colors.black, width: 2))),
-                      selectedDecoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(color: Colors.blue, width: 1)),
-                        color: Color(0xFFD3D3D3),
+              margin: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(0),
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.95,
+              ),
+              child: Card(
+                elevation: 3,
+                shadowColor: Colors.black,
+                clipBehavior: Clip.none,
+                child: ResponsiveDatatable(
+                  reponseScreenSizes: [ScreenSize.xs],
+                  actions: [
+                    TextButton.icon(
+                      onPressed: () => {setState(() {})},
+                      icon: Icon(Icons.add),
+                      label: Text("Novo SIMCARD"),
+                    ),
+                    TextButton.icon(
+                      onPressed: () => {print('Editar')},
+                      icon: Icon(Icons.edit),
+                      label: Text("Editar"),
+                    ),
+                    TextButton.icon(
+                      onPressed: () => {print('Exportar')},
+                      icon: Icon(Icons.add_chart),
+                      label: Text("Exportar"),
+                    ),
+                    TextButton.icon(
+                      onPressed: () => {tableController.fetch()},
+                      icon: Icon(Icons.refresh_sharp),
+                      label: Text("Refresh"),
+                    ),
+                    TextButton.icon(
+                      onPressed: () => {print('Delete')},
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
                       ),
-                      headerTextStyle: TextStyle(color: Colors.black),
-                      rowTextStyle: TextStyle(color: Colors.orange),
-                      selectedTextStyle: TextStyle(color: Colors.blue),
-                    ))),
+                      label: const Text(
+                        "Deletar",
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                    Obx(() {
+                      if (searchController.isSearch.value) {
+                        return Container(
+                          width: 300,
+                          height: 40,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: 'Pesquise por ' +
+                                  tableController.searchKey!
+                                      .replaceAll(new RegExp('[\\W_]+'), ' ')
+                                      .toUpperCase(),
+                              prefixIcon: IconButton(
+                                icon: Icon(Icons.cancel),
+                                onPressed: () {
+                                  searchController.setSearchState(false);
+                                  tableController.fetch();
+                                  print("Passei aqui");
+                                },
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(Icons.search),
+                                onPressed: () {},
+                              ),
+                            ),
+                            onChanged: (value) {
+                              if (value.isEmpty) {
+                                tableController.fetch();
+                              }
+                            },
+                            onSubmitted: (value) {
+                              tableController.filterData(value);
+                              print(value);
+                            },
+                          ),
+                        );
+                      } else {
+                        return IconButton(
+                          icon: Icon(Icons.search),
+                          onPressed: () {
+                            searchController.setSearchState(true);
+                          },
+                        );
+                      }
+                    })
+                  ],
+                  headers: headers,
+                  source: tableController.listSims,
+                  selecteds: tableController.selecteds,
+                  showSelect: tableController.showSelect,
+                  autoHeight: false,
+                  dropContainer: (data) {
+                    return _DropDownContainer(data: data);
+                  },
+                  onChangedRow: (value, header) {
+                    // print(value);
+                    // print(header);
+                  },
+                  onSubmittedRow: (value, header) {
+                    /// print(value);
+                    /// print(header);
+                  },
+                  onTabRow: (data) {
+                    print(data);
+                  },
+                  onSort: (value) => tableController.onSort(value),
+                  expanded: tableController.expanded,
+                  sortAscending: tableController.sortAscending,
+                  sortColumn: tableController.sortColumn,
+                  isLoading: tableController.isLoading,
+                  onSelect: (value, item) =>
+                      tableController.onSelect(value, item),
+                  onSelectAll: (value) => tableController.onSelectAll(value),
+                  footers: [
+                    Container(
+                      padding: UTILS.padding_horizontal_15,
+                      child: const Text("Linhas por página: "),
+                    ),
+                    if (tableController.perPages.isNotEmpty)
+                      Container(
+                        padding: UTILS.padding_horizontal_15,
+                        child: DropdownButton<int>(
+                          value: tableController.currentPerPage,
+                          items: tableController.perPages
+                              .map((e) => DropdownMenuItem<int>(
+                                    child: Text("$e"),
+                                    value: e,
+                                  ))
+                              .toList(),
+                          onChanged: (dynamic value) {
+                            setState(() {
+                              tableController.currentPerPage = value;
+                              tableController.currentPage;
+                              tableController.resetData();
+                            });
+                          },
+                          isExpanded: false,
+                        ),
+                      ),
+                    Container(
+                      padding: UTILS.padding_horizontal_15,
+                      child: Text(
+                          "${tableController.currentPage} - ${tableController.currentPerPage} de ${tableController.total}"),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios, size: 16),
+                      onPressed: () {
+                        tableController.backArrow(tableController);
+                      },
+                      padding: UTILS.padding_horizontal_15,
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onPressed: () {
+                        tableController.nextPage(tableController);
+                      },
+                      padding: UTILS.padding_horizontal_15,
+                    )
+                  ],
+                  headerDecoration: const BoxDecoration(
+                      color: Color(0xffD3D3D3),
+                      border: Border(
+                          bottom: BorderSide(color: Colors.black, width: 2))),
+                  selectedDecoration: const BoxDecoration(
+                    border: Border(
+                        bottom: BorderSide(color: Colors.blue, width: 1)),
+                    color: Color(0xFFD3D3D3),
+                  ),
+                  headerTextStyle: const TextStyle(color: Colors.black),
+                  rowTextStyle: const TextStyle(color: Colors.orange),
+                  selectedTextStyle: const TextStyle(color: Colors.blue),
+                ),
+              ),
+            ),
           ]),
       // ),
     );
@@ -312,20 +289,35 @@ class _DropDownContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> _children = data.entries.map<Widget>((entry) {
-      Widget w = Row(
-        children: [
-          Text(entry.key.toString()),
-          // Spacer(),
-          Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: Text(entry.value.toString()),
-          ),
-        ],
-      );
+    final tableController = Provider.of<TableController>(context);
 
-      return w;
-    }).toList();
+    List<Widget> _children = [];
+
+    data.forEach((key, value) {
+      if (key != 'cliente' &&
+          key != 'id' &&
+          key != 'simcon' &&
+          key != 'numerochip' &&
+          key != 'fornecedor' &&
+          key != 'numerolinha') {
+        _children.add(
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 10, top: 10),
+                child: Text('${tableController.verification(key)}:'),
+              ),
+              const SizedBox(width: 10),
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Text(value.toString(),
+                    style: const TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ],
+          ),
+        );
+      }
+    });
 
     return Container(
       child: Column(
@@ -334,4 +326,3 @@ class _DropDownContainer extends StatelessWidget {
     );
   }
 }
-

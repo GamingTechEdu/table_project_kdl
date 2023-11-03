@@ -20,7 +20,7 @@ List<DatatableHeader> headers = [
     textAlign: TextAlign.center,
   ),
   DatatableHeader(
-    text: "Simcon",
+    text: "SIMCON",
     value: "simcon",
     show: true,
     sortable: true,
