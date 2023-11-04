@@ -21,7 +21,7 @@ class _CheckboxTesteState extends State<CheckboxTeste> {
           value: widget.checkboxController.value,
           onChanged: (value) {
             setState(() {
-              widget.checkboxController.changeState();
+              widget.checkboxController.chagestate();
             });
           },
         ),
