@@ -2,31 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:projeto_kdl_flutter/checkbox/checkbox_controller.dart';
 import 'package:provider/provider.dart';
 
-void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (context) => CheckBoxController(),
-      child: MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: CheckboxTeste(),
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
 class CheckboxTeste extends StatefulWidget {
-  const CheckboxTeste({super.key});
+  final CheckBoxController checkboxController;
+  CheckboxTeste({required this.checkboxController, Key? key}) : super(key: key);
 
   @override
   State<CheckboxTeste> createState() => _CheckboxTesteState();
 }
 
 class _CheckboxTesteState extends State<CheckboxTeste> {
-  final checkboxController = CheckBoxController();
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -34,21 +18,15 @@ class _CheckboxTesteState extends State<CheckboxTeste> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Checkbox(
-            value: checkboxController.value,
-            onChanged: (value) {
-              setState(() {
-                checkboxController.chagestate();
-              });
-            }),
-        // ElevatedButton(
-        //   onPressed: (){
-        //     setState(() {
-        //       checkboxController.chagestate();
-        //     });
-        //   },
-        //   child: Text('Ativar checkbox'),
-        // )
+          value: widget.checkboxController.value,
+          onChanged: (value) {
+            setState(() {
+              widget.checkboxController.changeState();
+            });
+          },
+        ),
       ],
     );
   }
 }
+
