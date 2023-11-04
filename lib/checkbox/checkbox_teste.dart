@@ -40,14 +40,14 @@ class _CheckboxTesteState extends State<CheckboxTeste> {
                 checkboxController.chagestate();
               });
             }),
-        ElevatedButton(
-          onPressed: (){
-            setState(() {
-              checkboxController.chagestate();
-            });
-          },
-          child: Text('Ativar checkbox'),
-        )
+        // ElevatedButton(
+        //   onPressed: (){
+        //     setState(() {
+        //       checkboxController.chagestate();
+        //     });
+        //   },
+        //   child: Text('Ativar checkbox'),
+        // )
       ],
     );
   }
