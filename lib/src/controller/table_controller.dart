@@ -45,12 +45,14 @@ class TableController extends ChangeNotifier {
       _total = _sourceFiltered.length;
       resetData();
       notifyListeners();
+      print('Notifiquei os ouvintes');
     } catch (e) {
       print('Error $e');
     }
   }
 
   resetData({start = 0}) async {
+    print("ResetData");
     isLoading = true;
     var _expandedLen =
         _total - start < currentPerPage! ? _total - start : currentPerPage;
@@ -61,6 +63,7 @@ class TableController extends ChangeNotifier {
       listSims = _sourceFiltered.getRange(start, start + _expandedLen).toList();
       isLoading = false;
       notifyListeners();
+      print('sai do ResetData');
     });
   }
 
