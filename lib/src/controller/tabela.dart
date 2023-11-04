@@ -1,11 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:projeto_kdl_flutter/src/controller/table_controller.dart';
 
-class Tabela {
-  final TableController tableController;
-
-  Tabela(this.tableController);
-
-  void atualizarTabela() {
-    tableController.fetch();
+class TabelaController extends ChangeNotifier {
+  fetch() {
+    print('Dados atualizados da tabela');
+    notifyListeners();
   }
 }
