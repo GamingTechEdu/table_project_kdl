@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CheckBoxController extends ChangeNotifier {
   bool value = false;
 
-  void chagestate() {
+  chagestate() {
     value = !value;
     notifyListeners();
   }
