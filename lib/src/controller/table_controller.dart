@@ -39,6 +39,7 @@ class TableController extends ChangeNotifier {
     try {
       print('Entrei no fetch');
       listSims = await _tableController.getList();
+      print('Lista de Sims => $listSims');
       sourceOriginal = listSims;
       _sourceFiltered = List.from(listSims);
       _total = _sourceFiltered.length;
