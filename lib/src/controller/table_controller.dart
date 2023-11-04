@@ -37,6 +37,7 @@ class TableController extends ChangeNotifier {
 
   fetch() async {
     try {
+      print('Entrei no fetch');
       listSims = await _tableController.getList();
       sourceOriginal = listSims;
       _sourceFiltered = List.from(listSims);
