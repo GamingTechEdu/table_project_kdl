@@ -63,22 +63,4 @@ class Simcard {
       'slotsimcon': slotsimcon,
     };
   }
-// factory Simcard.fromJson(Map<String, dynamic> json) {
-//   return Simcard(
-//     id: json['id'],
-//     cliente: json['cliente'],
-//     simcon: json['simcon'],
-//     slotsimcon: json['slotsimcon'],
-//     datainstalacao: DateTime.parse(json['datainstalacao'].split('-').reversed.join('-')),
-//     numerochip: json['numerochip'],
-//     dataaticacao: DateTime.parse(json['dataaticacao'].split('-').reversed.join('-')),
-//     fornecedor: json['fornecedor'],
-//     operadora: json['operadora'],
-//     plano: json['plano'],
-//     apn: json['apn'],
-//     numerolinha: json['numerolinha'],
-//     numeroip: json['numeroip'],
-//     obs: json['obs'],
-//   );
-// }
 }
