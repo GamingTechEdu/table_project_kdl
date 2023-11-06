@@ -1,16 +1,12 @@
-import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:projeto_kdl_flutter/src/controller/table_controller.dart';
-import 'package:projeto_kdl_flutter/src/repositories/table_repository_mock.dart';
 import 'package:provider/provider.dart';
 import '../datatable_views.dart';
 import 'package:adaptivex/adaptivex.dart';
 import '../data/data_initialization.dart';
-import '../data/api_service.dart';
 import '../controller/controller.dart';
 import 'package:get/get.dart';
-
 import '../utils/api_utils.dart';
 
 class InteractiveDataTableView extends StatefulWidget {
