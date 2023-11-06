@@ -11,7 +11,7 @@ class TableController extends ChangeNotifier {
   List<int> perPages = [15, 25, 55, 105, 155, 205];
   bool showSelect = true;
   bool sortAscending = true;
-  String? sortColumn;
+  String? sortColumn ;
   String? searchKey = "numerochip";
   List<bool>? expanded;
   int _total = 100;
@@ -23,7 +23,6 @@ class TableController extends ChangeNotifier {
   List<Map<String, dynamic>> listSims = ([]);
   List<Map<String, dynamic>> sourceOriginal = ([]);
   List<Map<String, dynamic>> sourceFiltered = ([]);
-
 
   int get total => _total;
 
@@ -57,7 +56,6 @@ class TableController extends ChangeNotifier {
 
   filterData(value) async{
     isLoading = true;
-    // sourceOriginal = sourceFiltered;
     sourceOriginal = await _tableController.getList();
     try {
       if (value == "" || value == null) {
@@ -149,6 +147,12 @@ class TableController extends ChangeNotifier {
 
   String verification(String value){
     switch(value) {
+      case 'numerochip':
+        return 'ICCID';
+      case 'simcon':
+        return 'SIMCON';
+      case 'fornecedor':
+        return 'Fornecedor';
       case 'slotsimcon':
         return 'Slot SIMCON';
       case 'datainstalacao':

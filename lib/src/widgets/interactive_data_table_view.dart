@@ -96,8 +96,6 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
   Widget build(BuildContext context) {
     final tableController = Provider.of<TableController>(context);
 
-    // int? maxCharacters = (tableController.searchKey == 'simcon') ? 7 : null;
-
     return Scaffold(
       body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -157,7 +155,8 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                           controller: textController,
                           decoration: InputDecoration(
                             hintText: 'Pesquise por ' +
-                                tableController.searchKey!
+                                tableController
+                                    .verification(tableController.searchKey!)
                                     .replaceAll(RegExp('[\\W_]+'), ' ')
                                     .toUpperCase(),
                             prefixIcon: IconButton(
@@ -172,9 +171,7 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                             ),
                             suffixIcon: IconButton(
                               icon: Icon(Icons.search),
-                              onPressed: () {
-                                print(tableController.searchKey);
-                              },
+                              onPressed: () {},
                             ),
                           ),
                           onChanged: (value) {
@@ -191,10 +188,14 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                         onPressed: () {
                           setState(() {
                             tableController.isSearch = true;
+                            if (tableController.searchKey == 'simcon') {
+                              print('teste');
+                              tableController
+                                  .verification(tableController.searchKey!);
+                            }
                           });
                         },
                       )
-
                   ],
                   headers: headers,
                   source: tableController.listSims,
