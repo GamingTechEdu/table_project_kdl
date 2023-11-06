@@ -1,18 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:projeto_kdl_flutter/src/repositories/table_repository.dart';
-import '../model/table_data_model.dart';
-
-// class TableController {
-//   final TableRepository _tableController;
-//   TableController(this._tableController);
-//
-//   List<Map<String, dynamic>> listSims = ([]);
-//
-//   fetch() async {
-//     listSims = await _tableController.getList();
-//     print('Lista de Sims => $listSims');
-//   }
-// }
 
 class TableController extends ChangeNotifier {
   final TableRepository _tableController;
@@ -28,62 +16,63 @@ class TableController extends ChangeNotifier {
   int? currentPerPage = 25;
   int currentPage = 1;
   bool isLoading = true;
+  bool isSearch = false;
   List<Map<String, dynamic>> selecteds = [];
   List<Map<String, dynamic>> listSims = ([]);
   List<Map<String, dynamic>> sourceOriginal = ([]);
-  List<Map<String, dynamic>> _sourceFiltered = ([]);
+  List<Map<String, dynamic>> sourceFiltered = ([]);
 
   int get total => _total;
 
   fetch() async {
     try {
-      print('Entrei no fetch');
       listSims = await _tableController.getList();
       sourceOriginal = listSims;
-      _sourceFiltered = List.from(listSims);
-      _total = _sourceFiltered.length;
+      sourceFiltered = List.from(listSims);
+      _total = sourceFiltered.length;
       resetData();
       notifyListeners();
-      print('Notifiquei os ouvintes');
     } catch (e) {
       print('Error $e');
     }
   }
 
   resetData({start = 0}) async {
-    print("ResetData");
     isLoading = true;
     var _expandedLen =
         _total - start < currentPerPage! ? _total - start : currentPerPage;
     Future.delayed(const Duration(seconds: 0)).then((value) {
       expanded = List.generate(_expandedLen as int, (index) => false);
-      listSims.clear();
       sourceOriginal = listSims;
-      listSims = _sourceFiltered.getRange(start, start + _expandedLen).toList();
+      listSims.clear();
+      listSims = sourceFiltered.getRange(start, start + _expandedLen).toList();
+      print(sourceFiltered.length);
       isLoading = false;
       notifyListeners();
-      print('sai do ResetData');
     });
   }
 
-  filterData(value) {
+
+  filterData(value) async{
     isLoading = true;
-    sourceOriginal = listSims;
+    // sourceOriginal = sourceFiltered;
+    sourceOriginal = await _tableController.getList();
+    print(sourceOriginal.length);
     try {
       if (value == "" || value == null) {
-        _sourceFiltered = sourceOriginal;
+        sourceFiltered = sourceOriginal;
       } else {
-        _sourceFiltered = sourceOriginal
+        sourceFiltered = sourceOriginal
             .where((data) => data[searchKey!]
                 .toString()
                 .toLowerCase()
                 .contains(value.toString().toLowerCase()))
             .toList();
       }
-      _total = _sourceFiltered.length;
+      _total = sourceFiltered.length;
       var _rangeTop = _total < currentPerPage! ? _total : currentPerPage!;
       expanded = List.generate(_rangeTop, (index) => false);
-      listSims = _sourceFiltered.getRange(0, _rangeTop).toList();
+      listSims = sourceFiltered.getRange(0, _rangeTop).toList();
     } catch (e) {
       print(e);
     }
@@ -98,17 +87,17 @@ class TableController extends ChangeNotifier {
     sortAscending = !sortAscending;
 
     if (sortAscending) {
-      _sourceFiltered
+      sourceFiltered
           .sort((a, b) => b["$sortColumn"].compareTo(a["$sortColumn"]));
     } else {
-      _sourceFiltered
+      sourceFiltered
           .sort((a, b) => a["$sortColumn"].compareTo(b["$sortColumn"]));
     }
 
-    var rangeTop = currentPerPage! < _sourceFiltered.length
+    var rangeTop = currentPerPage! < sourceFiltered.length
         ? currentPerPage!
-        : _sourceFiltered.length;
-    listSims = _sourceFiltered.getRange(0, rangeTop).toList();
+        : sourceFiltered.length;
+    listSims = sourceFiltered.getRange(0, rangeTop).toList();
     searchKey = value;
     isLoading = false;
     notifyListeners();

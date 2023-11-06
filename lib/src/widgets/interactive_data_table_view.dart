@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/material.dart';
 import 'package:projeto_kdl_flutter/src/controller/table_controller.dart';
 import 'package:projeto_kdl_flutter/src/repositories/table_repository_mock.dart';
@@ -143,50 +145,86 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                         ),
                       ),
                     ),
-                    Obx(() {
-                      if (searchController.isSearch.value) {
-                        return Container(
-                          width: 300,
-                          height: 40,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Pesquise por ' +
-                                  tableController.searchKey!
-                                      .replaceAll(new RegExp('[\\W_]+'), ' ')
-                                      .toUpperCase(),
-                              prefixIcon: IconButton(
-                                icon: Icon(Icons.cancel),
-                                onPressed: () {
-                                  searchController.setSearchState(false);
+                    // if (tableController.isSearch)
+                    //   Container(
+                    //     width: 300,
+                    //     height: 40,
+                    //     child: TextField(
+                    //       decoration: InputDecoration(
+                    //           hintText: 'Pesquise por ' +
+                    //               tableController.searchKey!
+                    //                   .replaceAll(new RegExp('[\\W_]+'), ' ')
+                    //                   .toUpperCase(),
+                    //           prefixIcon: IconButton(
+                    //               icon: Icon(Icons.cancel),
+                    //               onPressed: () {
+                    //                 setState(() {
+                    //                   tableController.isSearch = false;
+                    //                   tableController.fetch();
+                    //                 });
+                    //               }),
+                    //           suffixIcon: IconButton(
+                    //               icon: Icon(Icons.search),
+                    //               onPressed: () {
+                    //                 print(tableController.searchKey);
+                    //               })),
+                    //       onSubmitted: (value) {
+                    //         print(value);
+                    //         tableController.filterData(value);
+                    //       },
+                    //     ),
+                    //   ),
+                    // if (!tableController.isSearch)
+                    //   IconButton(
+                    //       icon: Icon(Icons.search),
+                    //       onPressed: () {
+                    //         setState(() {
+                    //           tableController.isSearch = true;
+                    //         });
+                    //       })
+
+                    if (tableController.isSearch)
+                      Container(
+                        width: 300,
+                        height: 40,
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: 'Pesquise por ' +
+                                tableController.searchKey!
+                                    .replaceAll(RegExp('[\\W_]+'), ' ')
+                                    .toUpperCase(),
+                            prefixIcon: IconButton(
+                              icon: Icon(Icons.cancel),
+                              onPressed: () {
+                                setState(() {
+                                  tableController.isSearch = false;
                                   tableController.fetch();
-                                  print("Passei aqui");
-                                },
-                              ),
-                              suffixIcon: IconButton(
-                                icon: Icon(Icons.search),
-                                onPressed: () {},
-                              ),
+                                });
+                              },
                             ),
-                            onChanged: (value) {
-                              if (value.isEmpty) {
-                                tableController.fetch();
-                              }
-                            },
-                            onSubmitted: (value) {
-                              tableController.filterData(value);
-                              print(value);
-                            },
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.search),
+                              onPressed: () {
+                                print(tableController.searchKey);
+                              },
+                            ),
                           ),
-                        );
-                      } else {
-                        return IconButton(
-                          icon: Icon(Icons.search),
-                          onPressed: () {
-                            searchController.setSearchState(true);
+                          onChanged: (value) {
+                            print('valor alterado: $value');
+                            tableController.filterData(value);
                           },
-                        );
-                      }
-                    })
+                        ),
+                      ),
+                    if (!tableController.isSearch)
+                      IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () {
+                          setState(() {
+                            tableController.isSearch = true;
+                          });
+                        },
+                      )
+
                   ],
                   headers: headers,
                   source: tableController.listSims,
