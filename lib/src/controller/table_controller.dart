@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:projeto_kdl_flutter/src/repositories/table_repository.dart';
 
 class TableController extends ChangeNotifier {
   final TableRepository _tableController;
   TableController(this._tableController);
+
 
   List<int> perPages = [15, 25, 55, 105, 155, 205];
   bool showSelect = true;
@@ -21,6 +23,7 @@ class TableController extends ChangeNotifier {
   List<Map<String, dynamic>> listSims = ([]);
   List<Map<String, dynamic>> sourceOriginal = ([]);
   List<Map<String, dynamic>> sourceFiltered = ([]);
+
 
   int get total => _total;
 
@@ -52,12 +55,10 @@ class TableController extends ChangeNotifier {
     });
   }
 
-
   filterData(value) async{
     isLoading = true;
     // sourceOriginal = sourceFiltered;
     sourceOriginal = await _tableController.getList();
-    print(sourceOriginal.length);
     try {
       if (value == "" || value == null) {
         sourceFiltered = sourceOriginal;
@@ -167,6 +168,16 @@ class TableController extends ChangeNotifier {
 
     }
     return value;
+  }
+
+  LengthLimitingTextInputFormatter searchLimit(){
+    return LengthLimitingTextInputFormatter(
+      (searchKey == 'simcon') ? 7 :
+      (searchKey == 'numerochip') ? 20 :
+      (searchKey == 'numerolinha') ? 15 :
+      (searchKey == 'cliente') ? 15 :
+      (searchKey == 'fornecedor') ? 15 : null,
+    );  //
   }
 
 }

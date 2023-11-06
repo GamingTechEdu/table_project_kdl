@@ -1,6 +1,7 @@
 import 'dart:html';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:projeto_kdl_flutter/src/controller/table_controller.dart';
 import 'package:projeto_kdl_flutter/src/repositories/table_repository_mock.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,7 @@ class InteractiveDataTableView extends StatefulWidget {
 
 class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
   final searchController = Get.put(Controller());
+  TextEditingController textController = TextEditingController();
 
   void initState() {
     super.initState();
@@ -94,6 +96,8 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
   Widget build(BuildContext context) {
     final tableController = Provider.of<TableController>(context);
 
+    // int? maxCharacters = (tableController.searchKey == 'simcon') ? 7 : null;
+
     return Scaffold(
       body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -145,49 +149,12 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                         ),
                       ),
                     ),
-                    // if (tableController.isSearch)
-                    //   Container(
-                    //     width: 300,
-                    //     height: 40,
-                    //     child: TextField(
-                    //       decoration: InputDecoration(
-                    //           hintText: 'Pesquise por ' +
-                    //               tableController.searchKey!
-                    //                   .replaceAll(new RegExp('[\\W_]+'), ' ')
-                    //                   .toUpperCase(),
-                    //           prefixIcon: IconButton(
-                    //               icon: Icon(Icons.cancel),
-                    //               onPressed: () {
-                    //                 setState(() {
-                    //                   tableController.isSearch = false;
-                    //                   tableController.fetch();
-                    //                 });
-                    //               }),
-                    //           suffixIcon: IconButton(
-                    //               icon: Icon(Icons.search),
-                    //               onPressed: () {
-                    //                 print(tableController.searchKey);
-                    //               })),
-                    //       onSubmitted: (value) {
-                    //         print(value);
-                    //         tableController.filterData(value);
-                    //       },
-                    //     ),
-                    //   ),
-                    // if (!tableController.isSearch)
-                    //   IconButton(
-                    //       icon: Icon(Icons.search),
-                    //       onPressed: () {
-                    //         setState(() {
-                    //           tableController.isSearch = true;
-                    //         });
-                    //       })
-
                     if (tableController.isSearch)
                       Container(
                         width: 300,
                         height: 40,
                         child: TextField(
+                          controller: textController,
                           decoration: InputDecoration(
                             hintText: 'Pesquise por ' +
                                 tableController.searchKey!
@@ -197,6 +164,7 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                               icon: Icon(Icons.cancel),
                               onPressed: () {
                                 setState(() {
+                                  textController.clear();
                                   tableController.isSearch = false;
                                   tableController.fetch();
                                 });
@@ -210,9 +178,11 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                             ),
                           ),
                           onChanged: (value) {
-                            print('valor alterado: $value');
                             tableController.filterData(value);
                           },
+                          inputFormatters: [
+                            tableController.searchLimit(),
+                          ],
                         ),
                       ),
                     if (!tableController.isSearch)
