@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:projeto_kdl_flutter/src/controller/table_controller.dart';
-import 'package:projeto_kdl_flutter/src/repositories/table_repository_mock.dart';
 import 'package:provider/provider.dart';
 import '../datatable_views.dart';
 import 'package:adaptivex/adaptivex.dart';
 import '../data/data_initialization.dart';
-import '../data/api_service.dart';
 import '../controller/controller.dart';
 import 'package:get/get.dart';
-
 import '../utils/api_utils.dart';
 
 class InteractiveDataTableView extends StatefulWidget {
@@ -21,6 +19,7 @@ class InteractiveDataTableView extends StatefulWidget {
 
 class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
   final searchController = Get.put(Controller());
+  TextEditingController textController = TextEditingController();
 
   void initState() {
     super.initState();
@@ -143,50 +142,55 @@ class _InteractiveDataTableViewState extends State<InteractiveDataTableView> {
                         ),
                       ),
                     ),
-                    Obx(() {
-                      if (searchController.isSearch.value) {
-                        return Container(
-                          width: 300,
-                          height: 40,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              hintText: 'Pesquise por ' +
-                                  tableController.searchKey!
-                                      .replaceAll(new RegExp('[\\W_]+'), ' ')
-                                      .toUpperCase(),
-                              prefixIcon: IconButton(
-                                icon: Icon(Icons.cancel),
-                                onPressed: () {
-                                  searchController.setSearchState(false);
+                    if (tableController.isSearch)
+                      Container(
+                        width: 300,
+                        height: 40,
+                        child: TextField(
+                          controller: textController,
+                          decoration: InputDecoration(
+                            hintText: 'Pesquise por ' +
+                                tableController
+                                    .verification(tableController.searchKey!)
+                                    .replaceAll(RegExp('[\\W_]+'), ' ')
+                                    .toUpperCase(),
+                            prefixIcon: IconButton(
+                              icon: Icon(Icons.cancel),
+                              onPressed: () {
+                                setState(() {
+                                  textController.clear();
+                                  tableController.isSearch = false;
                                   tableController.fetch();
-                                  print("Passei aqui");
-                                },
-                              ),
-                              suffixIcon: IconButton(
-                                icon: Icon(Icons.search),
-                                onPressed: () {},
-                              ),
+                                });
+                              },
                             ),
-                            onChanged: (value) {
-                              if (value.isEmpty) {
-                                tableController.fetch();
-                              }
-                            },
-                            onSubmitted: (value) {
-                              tableController.filterData(value);
-                              print(value);
-                            },
+                            suffixIcon: IconButton(
+                              icon: Icon(Icons.search),
+                              onPressed: () {},
+                            ),
                           ),
-                        );
-                      } else {
-                        return IconButton(
-                          icon: Icon(Icons.search),
-                          onPressed: () {
-                            searchController.setSearchState(true);
+                          onChanged: (value) {
+                            tableController.filterData(value);
                           },
-                        );
-                      }
-                    })
+                          inputFormatters: [
+                            tableController.searchLimit(),
+                          ],
+                        ),
+                      ),
+                    if (!tableController.isSearch)
+                      IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () {
+                          setState(() {
+                            tableController.isSearch = true;
+                            if (tableController.searchKey == 'simcon') {
+                              print('teste');
+                              tableController
+                                  .verification(tableController.searchKey!);
+                            }
+                          });
+                        },
+                      )
                   ],
                   headers: headers,
                   source: tableController.listSims,
